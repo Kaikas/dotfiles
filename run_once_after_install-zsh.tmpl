@@ -13,7 +13,14 @@ paru -S --needed mcfly
 sudo apt update
 sudo apt install -y \
     zsh fzf zsh-syntax-highlighting zsh-autosuggestions
-curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sudo sh -s -- --git cantino/mcfly
+
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+
+curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh -o "$tmp"
+
+# Install (needs root if it writes to /usr/local/bin)
+sudo sh "$tmp" --git cantino/mcfly
 {{- end }}
 
 if [ "$CURRENT_SHELL" != "/bin/zsh" ]; then
