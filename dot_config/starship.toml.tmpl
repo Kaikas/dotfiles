@@ -71,8 +71,17 @@ time_format = "%T"
 
 # Prompt: param 2
 [character]
+{{ if eq .distro "arch" }}
 error_symbol = " [×](bold red)"
 success_symbol = " [╰─λ](bold red)"
+{{ else if eq .distro "ubuntu" }}
+error_symbol = " [×](bold blue)"
+success_symbol = " [╰─λ](bold red)"
+{{ else }}
+error_symbol = " [×](bold white)"
+success_symbol = " [╰─λ](bold red)"
+{{ end }}
+
 
 # SYMBOLS
 [status]
