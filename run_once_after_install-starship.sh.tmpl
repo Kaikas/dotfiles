@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v starship >/dev/null; then
+    exit 0
+fi
+
+{{- if eq .chezmoi.os "linux" }}
+
+{{- if eq .profile "arch" }}
+sudo pacman -S --needed starship
+{{- elsif eq .profile "ubuntu" }}
+sudo apt install starship
+{{- else }}
+curl -sS https://starship.rs/install.sh | sh
+{{- end }}
+
+{{- end }}
+
