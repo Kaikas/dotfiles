@@ -19,7 +19,13 @@ style_user = "bold white"
 disabled = false
 format = "[$hostname]($style) in "
 ssh_only = false
+{{ if eq .distro "arch" }}
 style = "bold dimmed red"
+{{ else if eq .distro "ubuntu" }}
+style = "bold dimmed blue"
+{{ else }}
+style = "bold dimmed white"
+{{ end }}
 trim_at = "-"
 
 # Third param
