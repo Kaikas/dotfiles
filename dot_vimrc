@@ -1,0 +1,107 @@
+call plug#begin('~/.vim/plugged')
+Plug 'preservim/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'lervag/vimtex'
+call plug#end()
+
+let g:copilot_enabled = v:false
+set encoding=utf-8
+set hidden
+set nobackup
+set nowritebackup
+set cmdheight=2
+set updatetime=300
+set shortmess+=c
+set signcolumn=yes
+syntax on
+filetype plugin on
+set t_Co=256
+set number
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set hlsearch
+set list
+set listchars=tab:>-
+set signcolumn=no
+au BufNewFile,BufRead Jenkinsfile setf groovy
+au BufNewFile,BufRead Parameters setf groovy
+au BufNewFile,BufRead Seed_* setf groovy
+au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
+nmap <F7> :enew<CR>
+nmap <F8> :bprevious<CR>
+nmap <F9> :bnext<CR>
+nmap <F10> :bp <BAR> bd #<CR>
+
+" Nerd Tree
+function MyNerdToggle()
+  if &filetype == 'nerdtree'
+    :NERDTreeToggle
+  else
+    :NERDTreeFind
+  endif
+endfunction
+
+" nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-n> :call MyNerdToggle()<CR>
+let NERDTreeShowHidden=1
+let g:NERDTreeGitStatusWithFlags = 1
+let NERDTreeQuitOnOpen=1
+let NERDTreeWinSize=60
+
+" NerdCommenter
+let g:NERDSpaceDelims = 1
+let g:NERDCreateDefaultMappings = 0  " Disable default mappings
+vmap <silent> ,cc <Plug>NERDCommenterComment
+vmap <silent> ,cu <Plug>NERDCommenterUncomment
+nmap <silent> ,cc <Plug>NERDCommenterComment
+nmap <silent> ,cu <Plug>NERDCommenterUncomment
+
+" air-line
+let g:airline_powerline_fonts = 1
+
+"set cursorline
+set nowrap
+
+set mouse=v
+
+nnoremap <Space> :noh<Space><CR>
+
+
+if &diff
+  " Bessere Diff-Optionen
+  set diffopt+=iwhite,vertical
+
+  " Gut lesbare Farben
+  highlight DiffAdd     ctermfg=none ctermbg=22
+  highlight DiffChange  ctermfg=none ctermbg=24
+  highlight DiffText    ctermfg=none ctermbg=18
+  highlight DiffDelete  ctermfg=none ctermbg=52
+
+  " Folds mit leichter Verzögerung deaktivieren, damit sie sicher geöffnet werden
+  function! DisableDiffFoldsLater()
+    silent! windo set nofoldenable
+    silent! windo normal! zR
+  endfunction
+
+  augroup diffnofold
+    autocmd!
+    autocmd VimEnter * if &diff | call timer_start(150, {-> DisableDiffFoldsLater()}) | endif
+  augroup END
+endif
+
+nnoremap <silent> <C-j> ]c
+nnoremap <silent> <C-k> [c
+
+let g:vimtex_view_method = 'zathura'
+let g:vimtex_compiler_method = 'latexmk'
+" ü startet VimtexCompile
+nnoremap ü :VimtexCompile<CR>
+
+" ä kopiert gesamte Datei ins System-Clipboard
+nnoremap ä :%y+<CR>
+
+set noerrorbells
+set novisualbell
+set t_vb=
+set belloff=all
