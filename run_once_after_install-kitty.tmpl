@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+{{- if eq .chezmoi.os "linux" }}
+
+{{- if eq .distro "arch" }}
+sudo pacman -S --needed --noconfirm \
+  kitty
+{{- else if eq .distro "ubuntu" }}
+sudo apt update
+sudo apt install -y \
+  kitty
+{{- end }}
+
+{{- end }}
