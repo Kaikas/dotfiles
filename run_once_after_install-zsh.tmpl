@@ -13,7 +13,7 @@ paru -S --needed mcfly
 sudo apt update
 sudo apt install -y \
     zsh fzf zsh-syntax-highlighting zsh-autosuggestions
-curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sh
+curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sudo sh -s -- --git cantino/mcfly
 {{- end }}
 
 if [ "$CURRENT_SHELL" != "/bin/zsh" ]; then
