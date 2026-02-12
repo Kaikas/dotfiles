@@ -8,10 +8,12 @@ CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
 {{- if eq .distro "arch" }}
 sudo pacman -S --needed --noconfirm \
     zsh zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf
+paru -S --needed mcfly
 {{- else if eq .distro "ubuntu" }}
 sudo apt update
 sudo apt install -y \
     zsh fzf zsh-syntax-highlighting zsh-autosuggestions
+curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sh
 {{- end }}
 
 if [ "$CURRENT_SHELL" != "/bin/zsh" ]; then
