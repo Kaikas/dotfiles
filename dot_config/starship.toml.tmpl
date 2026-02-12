@@ -3,8 +3,16 @@
 [username]
 format = " [╭─$user]($style)@"
 show_always = true
+{{ if eq .distro "arch" }}
 style_root = "bold red"
 style_user = "bold red"
+{{ else if eq .distro "ubuntu" }}
+style_root = "bold blue"
+style_user = "bold blue"
+{{ else }}
+style_root = "bold white"
+style_user = "bold white"
+{{ end }}
 
 # Second param
 [hostname]
