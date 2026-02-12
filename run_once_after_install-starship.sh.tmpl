@@ -10,7 +10,7 @@ fi
 {{- if eq .distro "arch" }}
 sudo pacman -S --needed starship
 {{- else if eq .distro "ubuntu" }}
-sudo apt install starship
+curl -sS https://starship.rs/install.sh | sh
 {{- else }}
 curl -sS https://starship.rs/install.sh | sh
 {{- end }}
