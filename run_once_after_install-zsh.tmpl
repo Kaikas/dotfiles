@@ -13,6 +13,8 @@ if ! command -v paru >/dev/null 2>&1; then
   git clone https://aur.archlinux.org/paru.git
   cd paru
   makepkg -si
+  cd ..
+  rm -rf paru
 fi
 
 paru -S --needed mcfly
