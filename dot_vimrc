@@ -98,7 +98,7 @@ let g:vimtex_compiler_method = 'latexmk'
 nnoremap ü :VimtexCompile<CR>
 
 " ä kopiert gesamte Datei ins System-Clipboard
-nnoremap ä :%y+<CR>
+nnoremap ä :silent! %yank +<CR>
 
 set noerrorbells
 set novisualbell
