@@ -263,11 +263,11 @@ ex() {
 ########################################
 # 10. Aliases
 ########################################
-alias ls="lsd -al --color always --group-dirs first --icons"
-alias la="lsd -a --color always --group-dirs first --icons"
-alias ll="lsd -l --color always --group-dirs first --icons"
-alias lt="lsd -a --tree --color always --group-dirs first --icons"
-alias l.="lsd -ald --color always --group-dirs first --icons .*"
+alias ls="lsd -al --color always --group-dirs first"
+alias la="lsd -a --color always --group-dirs first"
+alias ll="lsd -l --color always --group-dirs first"
+alias lt="lsd -a --tree --color always --group-dirs"
+alias l.="lsd -ald --color always --group-dirs first .*"
 alias l="lsd -l --group-dirs first"
 
 alias cat="bat --style header --style snip --style changes --style header"
