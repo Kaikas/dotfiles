@@ -1,5 +1,5 @@
 ## FIRST LINE/ROW: Info & Status
-# First param ─┌
+
 [username]
 format = " [╭─$user]($style)@"
 show_always = true
@@ -14,7 +14,6 @@ style_root = "bold white"
 style_user = "bold white"
 {{ end }}
 
-# Second param
 [hostname]
 disabled = false
 format = "[$hostname]($style) in "
@@ -28,18 +27,21 @@ style = "bold dimmed white"
 {{ end }}
 trim_at = "-"
 
-# Third param
 [directory]
-style = "purple"
+{{ if eq .distro "arch" }}
+style = "red"
+{{ else if eq .distro "ubuntu" }}
+style = "blue"
+{{ else }}
+style = "white"
+{{ end }}
 truncate_to_repo = true
 truncation_length = 0
 truncation_symbol = "repo: "
 
-# Fourth param
 [sudo]
 disabled = false
 
-# Before all the version info (python, nodejs, php, etc.)
 [git_status]
 ahead = "⇡${count}"
 behind = "⇣${count}"
@@ -47,57 +49,44 @@ deleted = "x"
 diverged = "⇕⇡${ahead_count}⇣${behind_count}"
 style = "white"
 
-# Last param in the first line/row
 [cmd_duration]
 disabled = false
 format = "took [$duration]($style)"
 min_time = 1
 
 ## SECOND LINE/ROW: Prompt
-# Somethere at the beginning
+
 [battery]
-charging_symbol = ""
 disabled = true
+charging_symbol = ""
 discharging_symbol = ""
 full_symbol = ""
 
-[[battery.display]] # "bold red" style when capacity is between 0% and 15%
+[[battery.display]]
 disabled = false
 style = "bold red"
 threshold = 15
 
-[[battery.display]] # "bold yellow" style when capacity is between 15% and 50%
-disabled = true
-style = "bold yellow"
-threshold = 50
-
-[[battery.display]] # "bold green" style when capacity is between 50% and 80%
-disabled = true
-style = "bold green"
-threshold = 80
-
-# Prompt: optional param 1
 [time]
 disabled = true
 format = " 🕙 $time($style)\n"
 style = "bright-white"
 time_format = "%T"
 
-# Prompt: param 2
 [character]
 {{ if eq .distro "arch" }}
 error_symbol = " [×](bold red)"
 success_symbol = " [╰─λ](bold red)"
 {{ else if eq .distro "ubuntu" }}
 error_symbol = " [×](bold blue)"
-success_symbol = " [╰─λ](bold red)"
+success_symbol = " [╰─λ](bold blue)"
 {{ else }}
 error_symbol = " [×](bold white)"
-success_symbol = " [╰─λ](bold red)"
+success_symbol = " [╰─λ](bold white)"
 {{ end }}
 
+## SYMBOLS
 
-# SYMBOLS
 [status]
 disabled = false
 format = '[\[$symbol$status_common_meaning$status_signal_name$status_maybe_int\]]($style)'
@@ -167,3 +156,4 @@ symbol = " "
 
 [swift]
 symbol = "ﯣ "
+
