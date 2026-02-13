@@ -1,5 +1,13 @@
 # Install
 sh -c "$(curl -fsLS get.chezmoi.io)"
+yay -S chezmoi
+
+# Profile
+mkdir -p .config/chezmoi
+vim .config/chezmoi/chezmoi.toml
+
+[data]
+distro = "ubuntu"
 
 # Init
 chezmoi init --apply git@github.com:Kaikas/dotfiles.git
