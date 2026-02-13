@@ -21,7 +21,7 @@ paru -S --needed mcfly
 {{- else if eq .distro "ubuntu" }}
 sudo apt update
 sudo apt install -y \
-    zsh fzf zsh-syntax-highlighting zsh-autosuggestions
+    zsh fzf zsh-syntax-highlighting zsh-autosuggestions bat
 
 if ! command -v mcfly >/dev/null 2>&1; then
   tmp="$(mktemp)"
