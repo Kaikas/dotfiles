@@ -1,0 +1,338 @@
+# i3 config file (v4)
+
+
+########################################
+# 0. Host specific
+########################################
+{{- $host := lower .chezmoi.hostname -}}
+
+# Host specific commands
+{{- if eq $host "nyx" }}
+set $lockWallpaper $HOME/Wallpaper/lock.png
+set $wallpaper $HOME/Wallpaper/arch-nord-dark.png
+{{- else if eq $host "styx" }}
+set $lockWallpaper $HOME/Wallpaper/lock.png
+set $wallpaper $HOME/Wallpaper/arch-nord-dark.png
+{{- end }}
+
+########################################
+# 0. Modifiers
+########################################
+set $super Mod4
+set $alt Mod1
+
+########################################
+# 1. Default apps
+########################################
+set $preferredTerminalEmulator /usr/bin/kitty
+set $preferredBrowser /usr/bin/firefox
+set $preferredFileManager /usr/bin/nautilus
+set $preferredMailClient /usr/bin/thunderbird
+set $preferredTextEditor /usr/bin/vim
+set $preferredScreenCaptureTool /usr/bin/flameshot gui
+
+########################################
+# 2. Basics
+########################################
+floating_modifier $super
+hide_edge_borders none
+workspace_auto_back_and_forth yes
+font pango:JetBrains Mono 10
+exec --no-startup-id xset -b
+
+########################################
+# 3. App keybinds
+########################################
+bindsym $super+F1 exec $preferredBrowser; focus
+bindsym $super+F2 exec $preferredMailClient; focus
+bindsym $super+F3 exec $preferredFileManager; focus
+bindsym $super+F4 exec $preferredTextEditor; focus
+bindsym $super+Return exec $preferredTerminalEmulator
+
+########################################
+# 4. Launchers
+########################################
+{{- if eq $host "styx" }}
+bindsym $super+d exec --no-startup-id $HOME/.local/bin/rofi-bg.sh
+{{- else }}
+bindsym $super+d exec --no-startup-id rofi -show run
+{{- end }}
+
+
+########################################
+# 5. Screen lock, suspend
+########################################
+set $lockscript i3lock -i $lockWallpaper
+
+bindsym $super+9 exec $lockscript
+bindsym XF86WakeUp exec $lockscript
+bindsym XF86Calculator exec --no-startup-id systemctl suspend
+exec --no-startup-id feh --bg-scale $wallpaper
+
+########################################
+# 6. Media keys
+########################################
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle 
+
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioStop exec --no-startup-id playerctl stop
+
+########################################
+# 7. Brightness keys
+########################################
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+########################################
+# 8. Screenshot
+########################################
+bindsym Print exec --no-startup-id $preferredScreenCaptureTool
+bindsym $super+Print exec --no-startup-id $preferredScreenCaptureTool
+
+########################################
+# 9. Window management
+########################################
+bindsym $super+q kill
+bindsym $super+Shift+q kill
+bindsym $super+c kill
+
+bindsym $super+Left focus left
+bindsym $super+Down focus down
+bindsym $super+Up focus up
+bindsym $super+Right focus right
+
+bindsym $super+Shift+Left move left
+bindsym $super+Shift+Down move down
+bindsym $super+Shift+Up move up
+bindsym $super+Shift+Right move right
+
+bindsym $super+h split h
+bindsym $super+v split v
+bindsym $super+f fullscreen toggle
+bindsym $super+s layout toggle split
+bindsym $super+space floating toggle
+bindsym $super+Shift+space focus mode_toggle
+bindsym $super+Shift+s sticky toggle
+bindsym $super+a focus parent
+
+bindsym $super+Ctrl+Right workspace next
+bindsym $super+Ctrl+Left workspace prev
+
+bindsym $alt+Control+Right workspace next
+bindsym $alt+Control+Left workspace prev
+
+########################################
+# 10. Workspaces 1-8
+########################################
+bindsym $super+1 workspace 1
+bindsym $super+2 workspace 2
+bindsym $super+3 workspace 3
+bindsym $super+4 workspace 4
+bindsym $super+5 workspace 5
+bindsym $super+6 workspace 6
+bindsym $super+7 workspace 7
+bindsym $super+8 workspace 8
+
+bindsym $super+Shift+1 move container to workspace 1
+bindsym $super+Shift+2 move container to workspace 2
+bindsym $super+Shift+3 move container to workspace 3
+bindsym $super+Shift+4 move container to workspace 4
+bindsym $super+Shift+5 move container to workspace 5
+bindsym $super+Shift+6 move container to workspace 6
+bindsym $super+Shift+7 move container to workspace 7
+bindsym $super+Shift+8 move container to workspace 8
+
+bindsym $alt+Shift+1 move container to workspace 1; workspace 1
+bindsym $alt+Shift+2 move container to workspace 2; workspace 2
+bindsym $alt+Shift+3 move container to workspace 3; workspace 3
+bindsym $alt+Shift+4 move container to workspace 4; workspace 4
+bindsym $alt+Shift+5 move container to workspace 5; workspace 5
+bindsym $alt+Shift+6 move container to workspace 6; workspace 6
+bindsym $alt+Shift+7 move container to workspace 7; workspace 7
+bindsym $alt+Shift+8 move container to workspace 8; workspace 8
+
+########################################
+# 11. Move workspace between outputs
+########################################
+bindsym $super+Shift+h move workspace to output left
+bindsym $super+Shift+l move workspace to output right
+bindsym $super+Shift+j move workspace to output up
+bindsym $super+Shift+k move workspace to output down
+
+########################################
+# 12. Resize mode
+########################################
+mode "resize" {
+  bindsym Left resize shrink width 5 px or 5 ppt
+  bindsym Down resize grow height 5 px or 5 ppt
+  bindsym Up resize shrink height 5 px or 5 ppt
+  bindsym Right resize grow width 5 px or 5 ppt
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+bindsym $super+r mode "resize"
+
+########################################
+# 13. Borders
+########################################
+for_window [class=".*"] border pixel 0
+bindsym $super+u border none
+bindsym $super+y border pixel 1
+bindsym $super+n border normal
+
+########################################
+# 14. Gaps
+########################################
+gaps inner 0
+gaps outer 0
+smart_gaps on
+smart_borders on
+
+########################################
+# 15. System mode
+########################################
+set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+bindsym $super+0 mode "$mode_system"
+
+mode "$mode_system" {
+  bindsym l exec --no-startup-id i3exit lock, mode "default"
+  bindsym s exec --no-startup-id i3exit suspend, mode "default"
+  bindsym u exec --no-startup-id i3exit switch_user, mode "default"
+  bindsym e exec --no-startup-id i3exit logout, mode "default"
+  bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+  bindsym r exec --no-startup-id i3exit reboot, mode "default"
+  bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+
+########################################
+# 16. Autostart (common)
+########################################
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id nm-applet
+exec --no-startup-id xfce4-power-manager
+exec --no-startup-id blueman-applet
+exec --no-startup-id copyq
+
+
+########################################
+# 16. Autostart (host)
+########################################
+{{- if eq $host "nyx" }}
+exec --no-startup-id firefox
+exec --no-startup-id discord
+exec --no-startup-id steam
+exec --no-startup-id teams-for-linux
+exec --no-startup-id spotify
+exec --no-startup-id signal-desktop
+exec --no-startup-id Telegram
+exec --no-startup-id zapzap
+exec --no-startup-id pasystray
+exec --no-startup-id stalonetray -c .config/stalonetray/stalonetrayrc
+exec_always --no-startup-id $HOME/.local/bin/wacom-cintiq-map.sh
+exec_always --no-startup-id setcursor
+{{- end }}
+{{- if eq $host "styx" }}
+exec --no-startup-id nitrogen --restore
+exec --no-startup-id picom -b
+exec --no-startup-id clipit
+exec --no-startup-id xautolock -time 5 -locker "i3lock -i $lockWallpaper"
+exec --no-startup-id pamac-tray
+exec --no-startup-id teams
+{{- end }}
+
+
+########################################
+# 17. Display rules
+########################################
+{{- if eq $host "nyx" }}
+workspace 1 output DisplayPort-0
+workspace 2 output DisplayPort-0
+workspace 3 output DisplayPort-0
+workspace 4 output DisplayPort-0
+workspace 5 output DisplayPort-1
+workspace 6 output DisplayPort-1
+workspace 7 output DisplayPort-1
+workspace 8 output DisplayPort-1
+{{- else if eq $host "styx" }}
+{{- end }}
+
+
+
+
+########################################
+# 18. Floating rules (common)
+########################################
+for_window [title="alsamixer"] floating enable border pixel 1
+for_window [class="calamares"] floating enable border normal
+for_window [class="Pavucontrol"] floating enable
+for_window [class="keepassxc"] floating enable
+for_window [class="qt5ct"] floating enable sticky enable border normal
+for_window [class="qt6ct"] floating enable sticky enable border normal
+
+########################################
+# 19. Workspace assignment (common)
+########################################
+assign [class="steam"] workspace number 2
+assign [class="Firefox"] workspace number 1
+assign [class="Navigator"] workspace number 1
+assign [class="firefox"] workspace number 1
+
+assign [class="Spotify"] workspace number 6
+assign [class="teams"] workspace number 7
+assign [class="teams-for-linux"] workspace number 7
+assign [class="discord"] workspace number 8
+
+assign [class="Signal"] workspace number 5
+assign [class="Telegram"] workspace number 5
+assign [class="ZapZap"] workspace number 5
+
+########################################
+# 20. Bars 
+########################################
+
+{{- if eq $host "nyx" }}
+bar {
+  id "bar-left"
+  status_command i3status-rs /home/kaikas/.config/i3status-rust/config.toml
+  font pango:JetBrains Mono 10
+  tray_output none
+  workspace_buttons yes
+  workspace_command $HOME/.local/bin/i3bar
+  output DisplayPort-0
+
+}
+
+bar {
+  id "bar-right"
+  status_command i3status-rs /home/kaikas/.config/i3status-rust/config-nospace.toml
+  font pango:JetBrains Mono 10
+  tray_output none
+  workspace_buttons yes
+  workspace_command $HOME/.local/bin/i3bar
+  output DisplayPort-1
+}
+{{- else if eq $host "styx" }}
+bar {
+    font pango:DejaVu Sans Mono, FontAwesome 9
+    position bottom
+    status_command /home/kaikas/Tools/i3status-rust/target/release/i3status-rs /home/kaikas/.config/i3status-rust/config.toml 
+}
+{{- end }}
+
+########################################
+# 21. Colors
+########################################
+client.focused          #4c7899 #285577 #ffffff #2e9ef4 #285577
+client.focused_inactive #333333 #5f676a #ffffff #484e50 #5f676a
+client.unfocused        #333333 #222222 #888888 #292d2e #222222
+client.urgent           #2f343a #900000 #ffffff #900000 #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000 #0c0c0c
+
