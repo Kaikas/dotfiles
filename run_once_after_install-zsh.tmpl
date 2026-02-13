@@ -7,7 +7,7 @@ CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
 
 {{- if eq .distro "arch" }}
 sudo pacman -S --needed --noconfirm \
-    zsh zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf
+    zsh zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf lsd
 if ! command -v paru >/dev/null 2>&1; then
   sudo pacman -S --needed base-devel git
   git clone https://aur.archlinux.org/paru.git
@@ -21,7 +21,7 @@ paru -S --needed mcfly
 {{- else if eq .distro "ubuntu" }}
 sudo apt update
 sudo apt install -y \
-    zsh fzf zsh-syntax-highlighting zsh-autosuggestions bat
+    zsh fzf zsh-syntax-highlighting zsh-autosuggestions bat lsd
 
 if ! command -v mcfly >/dev/null 2>&1; then
   tmp="$(mktemp)"
