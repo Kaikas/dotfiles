@@ -236,6 +236,9 @@ command -v fvm >/dev/null 2>&1 && alias flutter="fvm flutter"
 
 [[ -x "/usr/bin/chromium" ]] && export PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium"
 
+
+[[ -x "$HOME/go/bin/" ]] && export PATH="$PATH:$HOME/go/bin/"
+
 ########################################
 # 9. Functions
 ########################################
