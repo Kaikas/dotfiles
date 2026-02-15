@@ -352,3 +352,9 @@ alias button="ssh sw-gaming.org"
 ########################################
 [[ -r "$HOME/.dart-cli-completion/zsh-config.zsh" ]] && source "$HOME/.dart-cli-completion/zsh-config.zsh"
 
+########################################
+# 12. Extra
+########################################
+# cava => visualize ALSA
+# act3 github actions visualizer
+# fitui => finanzen mit csv import
