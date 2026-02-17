@@ -325,7 +325,7 @@ alias ci-flash-2="ssh ci-flash-2@10.3.3.102"
 
 alias devops="ssh kaikas@10.3.0.23 -p 4243"
 
-alias cigeraet="ssh cigeraet@192.168.115.236"
+alias cigeraet="ssh kaikas@192.168.115.236"
 alias cigeraet2="ssh cigeraet@192.168.115.81"
 
 alias qs-prodserver="ssh eltakoadmin@192.168.115.157 -p 4243"
@@ -358,3 +358,6 @@ alias button="ssh sw-gaming.org"
 # cava => visualize ALSA
 # act3 github actions visualizer
 # fitui => finanzen mit csv import
+# gping
+# lazygit
+# humble-explorer
