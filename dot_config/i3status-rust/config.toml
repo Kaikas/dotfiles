@@ -1,0 +1,76 @@
+[theme]
+theme = "solarized-dark"
+
+[icons]
+icons = "awesome6"
+
+[[block]]
+block = "focused_window"
+[block.theme_overrides]
+idle_bg = "#cb4b16"
+idle_fg = "#000000"
+
+[[block]]
+block = "custom"
+command = "~/.local/bin/discord-mic-status.sh"
+interval = 1
+[block.theme_overrides]
+idle_bg = "#8fa3a6"
+idle_fg = "#000000"
+
+[[block]]
+block = "temperature"
+interval = 5
+idle = 100
+
+[[block]]
+block = "temperature"
+interval = 2
+#format = " 󰢮 {average}°C "
+chip = "amdgpu-pci-0300"
+idle = 100
+[block.theme_overrides]
+idle_bg = "#8fa3a6"
+idle_fg = "#000000"
+
+
+[[block]]
+block = "net"
+device = "enp5s0"
+format = "enp5s0: {$speed_down;K}↓ {$speed_up;K}↑ "
+interval = 1
+
+[[block]]
+block = "cpu"
+interval = 1
+format = " $utilization"
+[block.theme_overrides]
+idle_bg = "#8fa3a6"
+idle_fg = "#000000"
+
+[[block]]
+block = "memory"
+interval = 5
+format = "$icon $mem_used/$mem_total"
+
+[[block]]
+block = "disk_space"
+path = "/home/kaikas/"
+interval = 20
+format = "$icon $available"
+warning = 15.0
+alert = 10.0
+[block.theme_overrides]
+idle_bg = "#8fa3a6"
+idle_fg = "#000000"
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "time"
+interval = 60
+format = "$timestamp.datetime(f:'%a %d.%m.%y %R')"
+[block.theme_overrides]
+idle_bg = "#8fa3a6"
+idle_fg = "#000000"
