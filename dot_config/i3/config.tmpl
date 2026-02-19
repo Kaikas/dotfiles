@@ -224,6 +224,7 @@ exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id blueman-applet
 exec --no-startup-id copyq
+exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 
 ########################################
@@ -302,40 +303,7 @@ assign [class="ZapZap"] workspace number 5
 # 20. Bars 
 ########################################
 
-{{- if eq $host "nyx" }}
-bar {
-  id "bar-left"
-  status_command i3status-rs /home/kaikas/.config/i3status-rust/config.toml
-  font pango:JetBrains Mono 10
-  tray_output yes
-  workspace_buttons yes
-  workspace_command $HOME/.local/bin/i3bar
-  output DisplayPort-0
-
-}
-
-bar {
-  id "bar-right"
-  status_command i3status-rs /home/kaikas/.config/i3status-rust/config.toml
-  font pango:JetBrains Mono 10
-  tray_output none
-  workspace_buttons yes
-  workspace_command $HOME/.local/bin/i3bar
-  output DisplayPort-1
-}
-{{- else if eq $host "styx" }}
-bar {
-  font pango:DejaVu Sans Mono, FontAwesome 9
-  position bottom
-  status_command /home/kaikas/Tools/i3status-rust/target/release/i3status-rs /home/kaikas/.config/i3status-rust/config.toml 
-}
-{{- else }}
-bar {
-  font pango:DejaVu Sans Mono, FontAwesome 9
-  position bottom
-  status_command i3status
-}
-{{- end }}
+# use polybar
 
 ########################################
 # 21. Colors
