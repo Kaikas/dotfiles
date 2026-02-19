@@ -68,6 +68,8 @@ setopt interactive_comments
 setopt check_jobs
 setopt complete_in_word
 
+unsetopt BEEP
+
 ########################################
 # 4. Completion
 ########################################
