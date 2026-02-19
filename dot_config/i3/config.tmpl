@@ -66,9 +66,8 @@ bindsym $super+d exec --no-startup-id rofi -show run
 ########################################
 # 5. Screen lock, suspend
 ########################################
-set $lockscript i3lock -i $lockWallpaper
-
-bindsym $super+9 exec $lockscript
+bindsym $super+9 exec i3lock -i $lockWallpaper
+bindsym $super+l exec i3lock -i $lockWallpaper
 bindsym XF86WakeUp exec $lockscript
 bindsym XF86Calculator exec --no-startup-id systemctl suspend
 exec --no-startup-id feh --bg-scale $wallpaper
