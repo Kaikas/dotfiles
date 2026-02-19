@@ -222,6 +222,10 @@ if [[ -d "$PYENV_ROOT" ]]; then
   eval "$(pyenv init - 2>/dev/null)"
 fi
 
+if command -v uv >/dev/null 2>&1; then
+  eval "$(uv generate-shell-completion zsh)"
+fi
+
 [[ -r "/usr/share/nvm/nvm.sh" ]] && source "/usr/share/nvm/nvm.sh"
 [[ -r "/usr/share/nvm/bash_completion" ]] && source "/usr/share/nvm/bash_completion"
 
@@ -231,13 +235,9 @@ if [[ -n "$ANDROID_SDK_ROOT" ]]; then
   export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator:$PATH"
 fi
 
-[[ -d "$HOME/squish-for-qt-9.1.0/bin/ide" ]] && export PATH="$PATH:$HOME/squish-for-qt-9.1.0/bin/ide"
 [[ -d "$HOME/.pub-cache/bin" ]] && export PATH="$PATH:$HOME/.pub-cache/bin"
 
-command -v fvm >/dev/null 2>&1 && alias flutter="fvm flutter"
-
 [[ -x "/usr/bin/chromium" ]] && export PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium"
-
 
 [[ -x "$HOME/go/bin/" ]] && export PATH="$PATH:$HOME/go/bin/"
 
@@ -278,71 +278,41 @@ alias l="lsd -l --group-dirs first"
 alias cat="bat --style header --style snip --style changes --style header"
 [[ ! -x "/usr/bin/yay" && -x "/usr/bin/paru" ]] && alias yay="paru"
 
-alias grubup="sudo update-grub"
-alias tarnow="tar -acf "
 alias untar="tar -zxvf "
 alias wget="wget -c "
-alias psmem="ps auxf | sort -nr -k 4"
-alias psmem10="ps auxf | sort -nr -k 4 | head -10"
-alias upd="/usr/bin/garuda-update"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 alias dir="dir --color=auto"
-alias vdir="vdir --color=auto"
 alias grep="ugrep --color=auto"
 alias fgrep="ugrep -F --color=auto"
 alias egrep="ugrep -E --color=auto"
-alias hw="hwinfo --short"
-alias big="expac -H M '%m\t%n' | sort -h | nl"
 alias ip="ip -color"
-alias please="sudo"
-alias tb="nc termbin.com 9999"
-alias helpme="cht.sh --shell"
-alias pacdiff="sudo -H DIFFPROG=meld pacdiff"
-alias jctl="journalctl -p 3 -xb"
-alias rip="expac --timefmt='%Y-%m-%d %T' '%l\t%n %v' | sort | tail -200 | nl"
-
-alias homedisplay="$HOME/.screenlayout/default.sh"
-alias onedrive_sync="onedrive --synchronize"
-alias news="$HOME/Tools/news.sh"
-alias gtasks="$HOME/Tools/gtasks/gtasks"
-alias task-add="gtasks tasks -l Eltako add"
-alias task-done="gtasks tasks -l Eltako done"
-alias task-view="gtasks tasks -l Eltako view"
 
 alias suspend="systemctl suspend"
-alias lock="$HOME/Tools/lock.sh"
+alias lock="i3lock"
 
 ########################################
 # 11. SSH Aliases 
 ########################################
-alias actions_runner="ssh -Y actions_runner@10.2.1.93"
-
 alias ci-flash="ssh -Y -C kaikas@ci-flash-01.eltako.de"
 alias ci-flash-2="ssh ci-flash-2@ci-flash-02.eltako.de"
-
-alias devops="ssh kaikas@10.3.0.23 -p 4243"
-
 alias cigeraet="ssh kaikas@192.168.115.236"
 alias cigeraet2="ssh cigeraet@192.168.115.81"
-
-alias qs-prodserver="ssh eltakoadmin@192.168.115.157 -p 4243"
-
+alias devops="ssh kaikas@10.3.0.23 -p 4243"
 alias ci-mac="TERM=xterm ssh appseltako@ci-mac-01.eltako.de"
 alias ci-mac2="TERM=xterm ssh ci-mac-2@ci-mac-02.eltako.de"
-
 alias bianca="ssh -p 4243 eltakoadmin@bianca.eltako.de"
 alias ophelia="ssh -p 4243 eltakoadmin@ophelia.eltako.de"
-
-alias updateserver="ssh eltako-admin@10.194.24.10"
-
 alias saturn="ssh eltakoadmin@saturn.eltako.support -p 4243"
 alias namaka="ssh eltakoadmin@namaka.eltako.support -p 4243"
-
 alias gitea="ssh eltakoadmin@192.168.115.36"
+
+alias actions_runner="ssh -Y actions_runner@10.2.1.93"
+alias qs-prodserver="ssh eltakoadmin@192.168.115.157 -p 4243"
+alias updateserver="ssh eltako-admin@10.194.24.10"
 
 alias nyx="ssh 192.168.178.3"
 alias styx="ssh -X -C 192.168.178.2"
