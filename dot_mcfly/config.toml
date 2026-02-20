@@ -1,0 +1,14 @@
+[colors.darkmode]
+# normale Ergebnisliste
+results_bg = "black"
+results_fg = "white"
+results_hl = "cyan"
+
+# aktuelles (ausgewähltes) Element
+results_selection_bg = "yellow"
+results_selection_fg = "black"
+results_selection_hl = "red"
+
+[colors.menubar]
+bg = "blue"
+fg = "white"
