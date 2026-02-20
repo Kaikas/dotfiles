@@ -86,7 +86,27 @@ require("lazy").setup({
     end,
   },
 
+  -- rose-pine
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    lazy = false,
+    priority = 1000,
+  }
+
 })
+
+-- ============================================================
+-- Theme
+-- ============================================================
+vim.cmd.colorscheme("rose-pine-moon")
+vim.api.nvim_set_hl(0, "Normal", {
+  bg = "#1b1f2b",
+})
+vim.api.nvim_set_hl(0, "NormalNC", {
+  bg = "#1b1f2b",
+})
+
 
 -- ============================================================
 -- nvim-tree toggle
