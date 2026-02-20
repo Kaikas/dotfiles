@@ -61,14 +61,16 @@ setopt autocd
 setopt auto_pushd
 setopt pushd_ignore_dups
 setopt pushdminus
-
 setopt inc_append_history
 setopt share_history
 setopt interactive_comments
 setopt check_jobs
 setopt complete_in_word
-
 unsetopt BEEP
+unsetopt SHARE_HISTORY
+unsetopt INC_APPEND_HISTORY
+setopt APPEND_HISTORY
+
 
 ########################################
 # 4. Completion

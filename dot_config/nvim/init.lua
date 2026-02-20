@@ -111,7 +111,7 @@ require("lazy").setup({
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "pyright" }
+        ensure_installed = { "pyright", "clangd", "yamlls", "dockerls" }
       })
     end,
   },
@@ -128,6 +128,9 @@ require("lazy").setup({
   -- Completion
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
+  -- Snippets
+  { "L3MON4D3/LuaSnip" },
+  { "rafamadriz/friendly-snippets" },
 
 
 })
@@ -180,6 +183,59 @@ vim.lsp.config("pyright", {
 vim.lsp.enable("pyright")
 
 -- ============================================================
+-- C++ IDE
+-- ============================================================
+vim.lsp.config("clangd", {
+  on_attach = function(_, bufnr)
+    local map = function(keys, func, desc)
+      vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
+    end
+    map("gd", vim.lsp.buf.definition, "Go to definition")
+    map("gD", vim.lsp.buf.declaration, "Go to declaration")
+    map("gi", vim.lsp.buf.implementation, "Go to implementation")
+    map("gr", vim.lsp.buf.references, "Find references")
+    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "Document symbols")
+    map("<leader>ws", require("telescope.builtin").lsp_workspace_symbols, "Workspace symbols")
+  end,
+})
+
+vim.lsp.enable("clangd")
+
+-- ============================================================
+-- YAML IDE
+-- ============================================================
+vim.lsp.config("yamlls", {
+  settings = {
+    yaml = {
+      schemas = {
+        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+      },
+    },
+  },
+})
+
+vim.lsp.enable("yamlls")
+
+-- ============================================================
+-- Docker IDE
+-- ============================================================
+vim.lsp.config("dockerls", {
+  on_attach = function(_, bufnr)
+    local map = function(keys, func, desc)
+      vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
+    end
+    map("gd", vim.lsp.buf.definition, "Go to definition")
+    map("gD", vim.lsp.buf.declaration, "Go to declaration")
+    map("gi", vim.lsp.buf.implementation, "Go to implementation")
+    map("gr", vim.lsp.buf.references, "Find references")
+    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "Document symbols")
+    map("<leader>ws", require("telescope.builtin").lsp_workspace_symbols, "Workspace symbols")
+  end,
+})
+
+vim.lsp.enable("dockerls")
+
+-- ============================================================
 -- CMP: Autocomplete Setup
 -- ============================================================
 local cmp = require("cmp")
@@ -200,7 +256,8 @@ cmp.setup({
     { name = "nvim_lsp" },
   },
 })
-
+-- Snippets
+require("luasnip.loaders.from_vscode").lazy_load()
 
 
 -- ============================================================
