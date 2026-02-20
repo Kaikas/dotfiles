@@ -205,8 +205,9 @@ fi
 ########################################
 # 7. Environment, Editors, X11
 ########################################
-export SYSTEMD_EDITOR="vim"
-export EDITOR="vim"
+export SYSTEMD_EDITOR="nvim"
+export EDITOR="nvim"
+export VISUAL="nvim"
 
 if command -v xhost >/dev/null 2>&1; then
   xhost +local:root >/dev/null 2>&1
@@ -268,6 +269,7 @@ ex() {
 ########################################
 # 10. Aliases
 ########################################
+alias vim="nvim"
 alias ls="lsd -al --color always --group-dirs first"
 alias la="lsd -a --color always --group-dirs first"
 alias ll="lsd -l --color always --group-dirs first"
