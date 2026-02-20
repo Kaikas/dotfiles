@@ -26,6 +26,7 @@ vim.opt.belloff = "all"
 vim.opt.termguicolors = true
 vim.opt.clipboard = "unnamedplus"
 
+
 -- ============================================================
 -- Keymaps
 -- ============================================================
@@ -124,6 +125,9 @@ require("lazy").setup({
       require("Comment").setup()
     end,
   },
+  -- Completion
+  { "hrsh7th/nvim-cmp" },
+  { "hrsh7th/cmp-nvim-lsp" },
 
 
 })
@@ -175,6 +179,29 @@ vim.lsp.config("pyright", {
 
 vim.lsp.enable("pyright")
 
+-- ============================================================
+-- CMP: Autocomplete Setup
+-- ============================================================
+local cmp = require("cmp")
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      require("luasnip").lsp_expand(args.body) -- Snippet Support
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ["<C-Space>"] = cmp.mapping.complete(),         -- manuell Vervollständigung auslösen
+    ["<CR>"]       = cmp.mapping.confirm({ select = true }), -- Enter bestätigt
+    ["<Tab>"]      = cmp.mapping.select_next_item(), -- Tab durch Vorschläge
+    ["<S-Tab>"]    = cmp.mapping.select_prev_item(), -- Shift+Tab zurück
+  }),
+  sources = {
+    { name = "nvim_lsp" },
+  },
+})
+
+
 
 -- ============================================================
 -- nvim-tree toggle
@@ -189,4 +216,14 @@ local function my_tree_toggle()
 end
 
 vim.keymap.set("n", "<C-n>", my_tree_toggle, { silent = true })
+
+-- ============================================================
+-- Comment madness deactivated
+-- ============================================================
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.formatoptions:remove({ "r", "o" })
+  end,
+})
 
