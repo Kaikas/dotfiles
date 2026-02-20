@@ -74,7 +74,6 @@ require("lazy").setup({
       })
     end,
   },
-
   -- lualine 
   {
     "nvim-lualine/lualine.nvim",
@@ -85,16 +84,62 @@ require("lazy").setup({
       })
     end,
   },
-
   -- rose-pine
   {
     "rose-pine/neovim",
     name = "rose-pine",
     lazy = false,
     priority = 1000,
-  }
+  },
+  -- chezmoi
+  {
+    "alker0/chezmoi.vim",
+    lazy = false,
+  },
+  -- python editor
+  {
+    "neovim/nvim-lspconfig",
+  },
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+    end,
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = { "pyright" }
+      })
+    end,
+  },
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  {
+    "numToStr/Comment.nvim",
+    config = function()
+      require("Comment").setup()
+    end,
+  },
+
 
 })
+
+-- ============================================================
+-- Cheat Sheet
+-- ============================================================
+vim.api.nvim_create_autocmd("VimEnter", {
+ callback = function()
+   -- Nur wenn nvim OHNE Dateiparameter gestartet wurde
+   if vim.fn.argc() == 0 then
+     vim.cmd("edit ~/.config/nvim/cheatsheet.md")
+   end
+ end,
+})
+
 
 -- ============================================================
 -- Theme
@@ -106,6 +151,29 @@ vim.api.nvim_set_hl(0, "Normal", {
 vim.api.nvim_set_hl(0, "NormalNC", {
   bg = "#1b1f2b",
 })
+
+-- ============================================================
+-- Python IDE
+-- ============================================================
+vim.g.mapleader = " "
+
+vim.lsp.config("pyright", {
+  on_attach = function(_, bufnr)
+    local map = function(keys, func, desc)
+      vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
+    end
+
+    map("gd", vim.lsp.buf.definition, "Go to definition")
+    map("gD", vim.lsp.buf.declaration, "Go to declaration")
+    map("gi", vim.lsp.buf.implementation, "Go to implementation")
+    map("gr", vim.lsp.buf.references, "Find references")
+
+    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "Document symbols")
+    map("<leader>ws", require("telescope.builtin").lsp_workspace_symbols, "Workspace symbols")
+  end,
+})
+
+vim.lsp.enable("pyright")
 
 
 -- ============================================================
