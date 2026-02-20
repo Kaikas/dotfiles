@@ -25,6 +25,7 @@ vim.opt.visualbell = false
 vim.opt.belloff = "all"
 vim.opt.termguicolors = true
 vim.opt.clipboard = "unnamedplus"
+vim.opt.signcolumn = "auto"
 
 
 -- ============================================================
@@ -92,6 +93,12 @@ require("lazy").setup({
     lazy = false,
     priority = 1000,
   },
+  -- solarized
+  {
+    "maxmx03/solarized.nvim",
+    lazy = false,
+    priority = 1000,
+  },
   -- chezmoi
   {
     "alker0/chezmoi.vim",
@@ -151,13 +158,39 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- ============================================================
 -- Theme
 -- ============================================================
-vim.cmd.colorscheme("rose-pine-moon")
+-- vim.cmd.colorscheme("rose-pine-moon")
+-- vim.api.nvim_set_hl(0, "Normal", {
+--   bg = "#1b1f2b",
+-- })
+-- vim.api.nvim_set_hl(0, "NormalNC", {
+--   bg = "#1b1f2b",
+-- })
+require("solarized").setup({
+  variant = "dark",
+})
+
+vim.cmd.colorscheme("solarized")
+vim.o.background = "dark"
+vim.api.nvim_set_hl(0, "Normal",   { bg = "#002b36", fg = "#839496" })
+vim.api.nvim_set_hl(0, "NormalNC", { bg = "#002b36" })
+vim.api.nvim_set_hl(0, "Visual", {
+  bg = "#073642",
+  fg = "#93a1a1",
+})
+vim.api.nvim_set_hl(0, "Cursor", {
+  fg = "#002b36",
+  bg = "#93a1a1",
+})
 vim.api.nvim_set_hl(0, "Normal", {
-  bg = "#1b1f2b",
+  bg = "#073642",
+  fg = "#839496",
 })
 vim.api.nvim_set_hl(0, "NormalNC", {
-  bg = "#1b1f2b",
+  bg = "#073642",
 })
+vim.api.nvim_set_hl(0, "Visual",   { bg = "#586e75", fg = "#002b36" })
+vim.api.nvim_set_hl(0, "VisualNOS",{ bg = "#586e75", fg = "#002b36" })
+
 
 -- ============================================================
 -- Python IDE
