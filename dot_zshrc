@@ -136,6 +136,9 @@ alias ip="ip -color"
 
 alias suspend="systemctl suspend"
 alias lock="i3lock"
+alias sound="vim $HOME/.config/wireplumber/wireplumber.conf.d/50-application-volume.conf"
+alias sound-apply="systemctl --user restart wireplumber"
+
 
 ########################################
 # 11. SSH Aliases 
@@ -175,5 +178,6 @@ alias button="ssh sw-gaming.org"
 # procs
 # lazydocker
 # unp => unpack
+
 
 true
