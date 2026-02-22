@@ -143,7 +143,7 @@ alias ip="ip -color"
 
 alias suspend="systemctl suspend"
 alias lock="i3lock"
-alias sound="vim $HOME/.config/wireplumber/wireplumber.conf.d/50-application-volume.conf"
+alias sound="vim $HOME/.config/pipewire/pipewire-pulse.conf.d/90-app-volumes.conf"
 alias sound-apply="systemctl --user restart pipewire-pulse"
 
 
