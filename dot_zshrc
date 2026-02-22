@@ -96,6 +96,13 @@ zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey '^[[A' up-line-or-beginning-search
 bindkey '^[[B' down-line-or-beginning-search
+bindkey '^[[H'  beginning-of-line   # Home (xterm)
+bindkey '^[[F'  end-of-line         # End  (xterm)
+bindkey '^[[1~' beginning-of-line   # Home
+bindkey '^[[4~' end-of-line         # End
+bindkey '^[OH'  beginning-of-line   # Home (application mode)
+bindkey '^[OF'  end-of-line         # End  (application mode)
+bindkey '^[[3~' delete-char         # Delete
 
 ########################################
 # 7. Environment, Editors, X11
@@ -137,7 +144,7 @@ alias ip="ip -color"
 alias suspend="systemctl suspend"
 alias lock="i3lock"
 alias sound="vim $HOME/.config/wireplumber/wireplumber.conf.d/50-application-volume.conf"
-alias sound-apply="systemctl --user restart wireplumber"
+alias sound-apply="systemctl --user restart pipewire-pulse"
 
 
 ########################################
