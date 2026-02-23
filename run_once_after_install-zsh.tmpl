@@ -8,7 +8,7 @@ CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
 {{- if eq .distro "arch" }}
 sudo pacman -S --needed --noconfirm \
     zsh zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf lsd bat ugrep tar gzip bzip2 unzip unrar p7zip ncompress \
-      vim wget netcat curl meld hwinfo onedrive chromium uv i3lock polybar
+      vim wget netcat curl meld hwinfo  chromium uv i3lock polybar
 if ! command -v paru >/dev/null 2>&1; then
   sudo pacman -S --needed base-devel git
   git clone https://aur.archlinux.org/paru.git
