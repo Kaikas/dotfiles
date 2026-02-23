@@ -103,6 +103,25 @@ bindkey '^[[4~' end-of-line         # End
 bindkey '^[OH'  beginning-of-line   # Home (application mode)
 bindkey '^[OF'  end-of-line         # End  (application mode)
 bindkey '^[[3~' delete-char         # Delete
+# Ctrl + Left → backward-word
+key="${terminfo[kLFT5]}"
+[[ -z "$key" ]] && key="^[[1;5D"
+
+if [[ -n "$key" ]]; then
+  bindkey "$key" backward-word
+  bindkey -M viins "$key" backward-word
+  bindkey -M vicmd "$key" backward-word
+fi
+
+# Ctrl + Right → forward-word
+key="${terminfo[kRIT5]}"
+[[ -z "$key" ]] && key="^[[1;5C"
+
+if [[ -n "$key" ]]; then
+  bindkey "$key" forward-word
+  bindkey -M viins "$key" forward-word
+  bindkey -M vicmd "$key" forward-word
+fi
 
 ########################################
 # 7. Environment, Editors, X11
