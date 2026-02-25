@@ -1,7 +1,12 @@
 -- ~/.config/nvim/init.lua
 
 -- ============================================================
--- Basic options 
+-- Leader (MUSS vor Keymaps)
+-- ============================================================
+vim.g.mapleader = " "
+
+-- ============================================================
+-- Basic options
 -- ============================================================
 vim.opt.encoding = "utf-8"
 vim.opt.hidden = true
@@ -10,39 +15,37 @@ vim.opt.writebackup = false
 vim.opt.cmdheight = 2
 vim.opt.updatetime = 300
 vim.opt.shortmess:append("c")
-vim.opt.signcolumn = "yes"
 vim.opt.number = true
+
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
+
 vim.opt.hlsearch = true
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-" }
 vim.opt.wrap = false
 vim.opt.mouse = "v"
+
 vim.opt.errorbells = false
 vim.opt.visualbell = false
 vim.opt.belloff = "all"
+
 vim.opt.termguicolors = true
 vim.opt.clipboard = "unnamedplus"
-vim.opt.signcolumn = "auto"
-
+vim.opt.signcolumn = "yes"
 
 -- ============================================================
 -- Keymaps
 -- ============================================================
 local map = vim.keymap.set
 
--- F7: new buffer, F8,9: navigate buffers, F10: close buffer
 map("n", "<F7>",  "<cmd>enew<CR>", { silent = true })
 map("n", "<F8>",  "<cmd>bprevious<CR>", { silent = true })
 map("n", "<F9>",  "<cmd>bnext<CR>", { silent = true })
 map("n", "<F10>", "<cmd>bp | bd #<CR>", { silent = true })
 
--- Space clears search highlight
 map("n", "<Space>", "<cmd>nohlsearch<CR>", { silent = true })
-
--- Copy whole file to clipboard
 map("n", "ä", "<cmd>silent! %yank +<CR>", { silent = true })
 
 -- ============================================================
@@ -63,7 +66,6 @@ vim.opt.rtp:prepend(lazypath)
 -- Plugins
 -- ============================================================
 require("lazy").setup({
-  -- nvim-tree
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -76,222 +78,163 @@ require("lazy").setup({
       })
     end,
   },
-  -- lualine 
+
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("lualine").setup({
-        options = { icons_enabled = true },
-      })
+      require("lualine").setup({ options = { icons_enabled = true } })
     end,
   },
-  -- rose-pine
-  {
-    "rose-pine/neovim",
-    name = "rose-pine",
-    lazy = false,
-    priority = 1000,
-  },
-  -- solarized
-  {
-    "maxmx03/solarized.nvim",
-    lazy = false,
-    priority = 1000,
-  },
-  -- chezmoi
-  {
-    "alker0/chezmoi.vim",
-    lazy = false,
-  },
-  -- python editor
-  {
-    "neovim/nvim-lspconfig",
-  },
-  {
-    "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup()
-    end,
-  },
+
+  { "rose-pine/neovim", name = "rose-pine", lazy = false, priority = 1000 },
+  { "maxmx03/solarized.nvim", lazy = false, priority = 1000 },
+
+  { "alker0/chezmoi.vim", lazy = false },
+
+  -- LSP + mason
+  { "neovim/nvim-lspconfig" },
+  { "williamboman/mason.nvim", config = function() require("mason").setup() end },
   {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "pyright", "clangd", "yamlls", "dockerls" }
+        ensure_installed = { "pyright", "clangd", "yamlls", "dockerls" },
       })
     end,
   },
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-  },
-  {
-    "numToStr/Comment.nvim",
-    config = function()
-      require("Comment").setup()
-    end,
-  },
-  -- Completion
+
+  { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+  { "numToStr/Comment.nvim", config = function() require("Comment").setup() end },
+
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
-  -- Snippets
   { "L3MON4D3/LuaSnip" },
   { "rafamadriz/friendly-snippets" },
-
-
 })
 
 -- ============================================================
 -- Cheat Sheet
 -- ============================================================
 vim.api.nvim_create_autocmd("VimEnter", {
- callback = function()
-   -- Nur wenn nvim OHNE Dateiparameter gestartet wurde
-   if vim.fn.argc() == 0 then
-     vim.cmd("edit ~/.config/nvim/cheatsheet.md")
-   end
- end,
+  callback = function()
+    if vim.fn.argc() == 0 then
+      vim.cmd("edit ~/.config/nvim/cheatsheet.md")
+    end
+  end,
 })
-
 
 -- ============================================================
 -- Theme
 -- ============================================================
--- vim.cmd.colorscheme("rose-pine-moon")
--- vim.api.nvim_set_hl(0, "Normal", {
---   bg = "#1b1f2b",
--- })
--- vim.api.nvim_set_hl(0, "NormalNC", {
---   bg = "#1b1f2b",
--- })
-require("solarized").setup({
-  variant = "dark",
-})
-
+require("solarized").setup({ variant = "dark" })
 vim.cmd.colorscheme("solarized")
 vim.o.background = "dark"
+
 vim.api.nvim_set_hl(0, "Normal",   { bg = "#002b36", fg = "#839496" })
 vim.api.nvim_set_hl(0, "NormalNC", { bg = "#002b36" })
-vim.api.nvim_set_hl(0, "Visual", {
-  bg = "#073642",
-  fg = "#93a1a1",
-})
-vim.api.nvim_set_hl(0, "Cursor", {
-  fg = "#002b36",
-  bg = "#93a1a1",
-})
-vim.api.nvim_set_hl(0, "Normal", {
-  bg = "#073642",
-  fg = "#839496",
-})
-vim.api.nvim_set_hl(0, "NormalNC", {
-  bg = "#073642",
-})
 vim.api.nvim_set_hl(0, "Visual",   { bg = "#586e75", fg = "#002b36" })
 vim.api.nvim_set_hl(0, "VisualNOS",{ bg = "#586e75", fg = "#002b36" })
-
-
--- ============================================================
--- Python IDE
--- ============================================================
-vim.g.mapleader = " "
-
-vim.lsp.config("pyright", {
-  on_attach = function(_, bufnr)
-    local map = function(keys, func, desc)
-      vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
-    end
-
-    map("gd", vim.lsp.buf.definition, "Go to definition")
-    map("gD", vim.lsp.buf.declaration, "Go to declaration")
-    map("gi", vim.lsp.buf.implementation, "Go to implementation")
-    map("gr", vim.lsp.buf.references, "Find references")
-
-    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "Document symbols")
-    map("<leader>ws", require("telescope.builtin").lsp_workspace_symbols, "Workspace symbols")
-  end,
-})
-
-vim.lsp.enable("pyright")
+vim.api.nvim_set_hl(0, "Cursor",   { fg = "#002b36", bg = "#93a1a1" })
 
 -- ============================================================
--- C++ IDE
+-- LSP (version-gated: NVIM >= 0.11 uses core, else lspconfig)
 -- ============================================================
-vim.lsp.config("clangd", {
-  on_attach = function(_, bufnr)
-    local map = function(keys, func, desc)
-      vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
-    end
-    map("gd", vim.lsp.buf.definition, "Go to definition")
-    map("gD", vim.lsp.buf.declaration, "Go to declaration")
-    map("gi", vim.lsp.buf.implementation, "Go to implementation")
-    map("gr", vim.lsp.buf.references, "Find references")
-    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "Document symbols")
-    map("<leader>ws", require("telescope.builtin").lsp_workspace_symbols, "Workspace symbols")
-  end,
-})
 
-vim.lsp.enable("clangd")
+local on_attach = function(_, bufnr)
+  local km = function(keys, func, desc)
+    vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
+  end
 
--- ============================================================
--- YAML IDE
--- ============================================================
-vim.lsp.config("yamlls", {
-  settings = {
-    yaml = {
-      schemas = {
-        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+  km("gd", vim.lsp.buf.definition, "Go to definition")
+  km("gD", vim.lsp.buf.declaration, "Go to declaration")
+  km("gi", vim.lsp.buf.implementation, "Go to implementation")
+  km("gr", vim.lsp.buf.references, "Find references")
+
+  local ok_tb, tb = pcall(require, "telescope.builtin")
+  if ok_tb then
+    km("<leader>ds", tb.lsp_document_symbols, "Document symbols")
+    km("<leader>ws", tb.lsp_workspace_symbols, "Workspace symbols")
+  end
+end
+
+local v = vim.version()
+local is_nvim_011_or_newer = (v.major > 0) or (v.major == 0 and v.minor >= 11)
+
+if is_nvim_011_or_newer then
+  -- Core LSP (Neovim 0.11+)
+  vim.lsp.config("pyright", { on_attach = on_attach })
+  vim.lsp.config("clangd",  { on_attach = on_attach })
+  vim.lsp.config("dockerls",{ on_attach = on_attach })
+  vim.lsp.config("yamlls", {
+    on_attach = on_attach,
+    settings = {
+      yaml = {
+        schemas = {
+          ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+        },
       },
     },
-  },
-})
+  })
 
-vim.lsp.enable("yamlls")
-
--- ============================================================
--- Docker IDE
--- ============================================================
-vim.lsp.config("dockerls", {
-  on_attach = function(_, bufnr)
-    local map = function(keys, func, desc)
-      vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
-    end
-    map("gd", vim.lsp.buf.definition, "Go to definition")
-    map("gD", vim.lsp.buf.declaration, "Go to declaration")
-    map("gi", vim.lsp.buf.implementation, "Go to implementation")
-    map("gr", vim.lsp.buf.references, "Find references")
-    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "Document symbols")
-    map("<leader>ws", require("telescope.builtin").lsp_workspace_symbols, "Workspace symbols")
-  end,
-})
-
-vim.lsp.enable("dockerls")
+  -- enable servers
+  if type(vim.lsp.enable) == "function" then
+    vim.lsp.enable({ "pyright", "clangd", "yamlls", "dockerls" })
+  else
+    -- ultra-safety fallback (shouldn't happen on 0.11, but won't crash)
+    vim.notify("vim.lsp.enable missing on Neovim >=0.11; LSP servers may not start automatically", vim.log.levels.WARN)
+  end
+else
+  -- nvim-lspconfig (older Neovim)
+  local ok, lspconfig = pcall(require, "lspconfig")
+  if not ok then
+    vim.notify("nvim-lspconfig missing on older Neovim", vim.log.levels.ERROR)
+  else
+    lspconfig.pyright.setup({ on_attach = on_attach })
+    lspconfig.clangd.setup({ on_attach = on_attach })
+    lspconfig.dockerls.setup({ on_attach = on_attach })
+    lspconfig.yamlls.setup({
+      on_attach = on_attach,
+      settings = {
+        yaml = {
+          schemas = {
+            ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+          },
+        },
+      },
+    })
+  end
+end
 
 -- ============================================================
 -- CMP: Autocomplete Setup
 -- ============================================================
-local cmp = require("cmp")
+local ok_cmp, cmp = pcall(require, "cmp")
+if ok_cmp then
+  local ok_luasnip, luasnip = pcall(require, "luasnip")
+  if ok_luasnip then
+    pcall(function() require("luasnip.loaders.from_vscode").lazy_load() end)
+  end
 
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      require("luasnip").lsp_expand(args.body) -- Snippet Support
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ["<C-Space>"] = cmp.mapping.complete(),         -- manuell Vervollständigung auslösen
-    ["<CR>"]       = cmp.mapping.confirm({ select = true }), -- Enter bestätigt
-    ["<Tab>"]      = cmp.mapping.select_next_item(), -- Tab durch Vorschläge
-    ["<S-Tab>"]    = cmp.mapping.select_prev_item(), -- Shift+Tab zurück
-  }),
-  sources = {
-    { name = "nvim_lsp" },
-  },
-})
--- Snippets
-require("luasnip.loaders.from_vscode").lazy_load()
-
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        if ok_luasnip then
+          luasnip.lsp_expand(args.body)
+        end
+      end,
+    },
+    mapping = cmp.mapping.preset.insert({
+      ["<C-Space>"] = cmp.mapping.complete(),
+      ["<CR>"]      = cmp.mapping.confirm({ select = true }),
+      ["<Tab>"]     = cmp.mapping.select_next_item(),
+      ["<S-Tab>"]   = cmp.mapping.select_prev_item(),
+    }),
+    sources = {
+      { name = "nvim_lsp" },
+    },
+  })
+end
 
 -- ============================================================
 -- nvim-tree toggle
@@ -304,7 +247,6 @@ local function my_tree_toggle()
     vim.cmd("NvimTreeFindFile")
   end
 end
-
 vim.keymap.set("n", "<C-n>", my_tree_toggle, { silent = true })
 
 -- ============================================================
@@ -316,4 +258,3 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.formatoptions:remove({ "r", "o" })
   end,
 })
-
