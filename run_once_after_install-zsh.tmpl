@@ -22,7 +22,9 @@ paru -S --needed mcfly
 {{- else if eq .distro "ubuntu" }}
 sudo apt update
 sudo apt install -y \
-    zsh fzf zsh-syntax-highlighting zsh-autosuggestions bat lsd bat ugrep tar gzip bzip2 unzip unrar p7zip-full ncompress i3lock polybar
+    zsh fzf zsh-syntax-highlighting zsh-autosuggestions bat cargo bat ugrep tar gzip bzip2 unzip unrar p7zip-full ncompress i3lock polybar
+
+cargo install lsd
 
 if ! command -v mcfly >/dev/null 2>&1; then
   tmp="$(mktemp)"
