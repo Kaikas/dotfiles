@@ -154,6 +154,12 @@ alias lt="lsd -a --tree --color always --group-dirs"
 alias l.="lsd -ald --color always --group-dirs first .*"
 alias l="lsd -l --group-dirs first"
 
+# bat compatibility (Debian/Ubuntu vs Arch)
+if command -v bat >/dev/null 2>&1; then
+  alias bat="bat"
+elif command -v batcat >/dev/null 2>&1; then
+  alias bat="batcat"
+fi
 alias cat='bat --style=header,changes --paging=never'
 [[ ! -x "/usr/bin/yay" && -x "/usr/bin/paru" ]] && alias yay="paru"
 
