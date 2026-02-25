@@ -182,6 +182,7 @@ alias ophelia="ssh -p 4243 eltakoadmin@ophelia.eltako.de"
 alias saturn="ssh eltakoadmin@saturn.eltako.support -p 4243"
 alias namaka="ssh eltakoadmin@namaka.eltako.support -p 4243"
 alias gitea="ssh eltakoadmin@192.168.115.36"
+alias desdemona="ssh -p 4243 eltakoadmin@desdemona.eltako.de"
 
 alias actions_runner="ssh -Y actions_runner@10.2.1.93"
 alias qs-prodserver="ssh eltakoadmin@192.168.115.157 -p 4243"
