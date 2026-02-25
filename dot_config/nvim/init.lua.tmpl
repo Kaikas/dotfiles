@@ -1,13 +1,8 @@
--- ~/.config/nvim/init.lua
-
--- ============================================================
--- Leader (MUSS vor Keymaps)
--- ============================================================
-vim.g.mapleader = " "
-
+{{- if eq .distro "arch" -}}
 -- ============================================================
 -- Basic options
 -- ============================================================
+vim.g.mapleader = " "
 vim.opt.encoding = "utf-8"
 vim.opt.hidden = true
 vim.opt.backup = false
@@ -138,9 +133,8 @@ vim.api.nvim_set_hl(0, "VisualNOS",{ bg = "#586e75", fg = "#002b36" })
 vim.api.nvim_set_hl(0, "Cursor",   { fg = "#002b36", bg = "#93a1a1" })
 
 -- ============================================================
--- LSP (version-gated: NVIM >= 0.11 uses core, else lspconfig)
+-- LSP 
 -- ============================================================
-
 local on_attach = function(_, bufnr)
   local km = function(keys, func, desc)
     vim.keymap.set("n", keys, func, { buffer = bufnr, silent = true, desc = desc })
@@ -162,7 +156,6 @@ local v = vim.version()
 local is_nvim_011_or_newer = (v.major > 0) or (v.major == 0 and v.minor >= 11)
 
 if is_nvim_011_or_newer then
-  -- Core LSP (Neovim 0.11+)
   vim.lsp.config("pyright", { on_attach = on_attach })
   vim.lsp.config("clangd",  { on_attach = on_attach })
   vim.lsp.config("dockerls",{ on_attach = on_attach })
@@ -177,15 +170,12 @@ if is_nvim_011_or_newer then
     },
   })
 
-  -- enable servers
   if type(vim.lsp.enable) == "function" then
     vim.lsp.enable({ "pyright", "clangd", "yamlls", "dockerls" })
   else
-    -- ultra-safety fallback (shouldn't happen on 0.11, but won't crash)
     vim.notify("vim.lsp.enable missing on Neovim >=0.11; LSP servers may not start automatically", vim.log.levels.WARN)
   end
 else
-  -- nvim-lspconfig (older Neovim)
   local ok, lspconfig = pcall(require, "lspconfig")
   if not ok then
     vim.notify("nvim-lspconfig missing on older Neovim", vim.log.levels.ERROR)
@@ -258,3 +248,146 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.formatoptions:remove({ "r", "o" })
   end,
 })
+
+{{- else if eq .distro "ubuntu" -}}
+-- ============================================================
+-- Basic options 
+-- ============================================================
+vim.g.mapleader = " "
+vim.opt.encoding = "utf-8"
+vim.opt.hidden = true
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.cmdheight = 2
+vim.opt.updatetime = 300
+vim.opt.shortmess:append("c")
+vim.opt.number = true
+
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+
+vim.opt.hlsearch = true
+vim.opt.list = true
+vim.opt.listchars = { tab = ">-" }
+vim.opt.wrap = false
+vim.opt.mouse = "v"
+
+vim.opt.errorbells = false
+vim.opt.visualbell = false
+vim.opt.belloff = "all"
+
+vim.opt.termguicolors = true
+vim.opt.clipboard = "unnamedplus"
+vim.opt.signcolumn = "yes"
+
+-- ============================================================
+-- Keymaps 
+-- ============================================================
+local map = vim.keymap.set
+
+map("n", "<F7>",  "<cmd>enew<CR>", { silent = true })
+map("n", "<F8>",  "<cmd>bprevious<CR>", { silent = true })
+map("n", "<F9>",  "<cmd>bnext<CR>", { silent = true })
+map("n", "<F10>", "<cmd>bp | bd #<CR>", { silent = true })
+
+map("n", "<Space>", "<cmd>nohlsearch<CR>", { silent = true })
+map("n", "ä", "<cmd>silent! %yank +<CR>", { silent = true })
+
+-- ============================================================
+-- Plugins: lazy.nvim bootstrap 
+-- ============================================================
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git", "clone", "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- ============================================================
+-- Plugins 
+-- ============================================================
+require("lazy").setup({
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("nvim-tree").setup({
+        view = { width = 60 },
+        filters = { dotfiles = false },
+        git = { enable = true },
+        actions = { open_file = { quit_on_open = true } },
+      })
+    end,
+  },
+
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("lualine").setup({ options = { icons_enabled = true } })
+    end,
+  },
+
+  -- keep ONE theme only (avoid duplicate theme ecosystems on old NVIM)
+  { "maxmx03/solarized.nvim", lazy = false, priority = 1000 },
+
+  { "alker0/chezmoi.vim", lazy = false },
+})
+
+-- ============================================================
+-- Cheat Sheet 
+-- ============================================================
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    if vim.fn.argc() == 0 then
+      vim.cmd("edit ~/.config/nvim/cheatsheet.md")
+    end
+  end,
+})
+
+-- ============================================================
+-- Theme 
+-- ============================================================
+require("solarized").setup({ variant = "dark" })
+vim.cmd.colorscheme("solarized")
+vim.o.background = "dark"
+
+vim.api.nvim_set_hl(0, "Normal",   { bg = "#002b36", fg = "#839496" })
+vim.api.nvim_set_hl(0, "NormalNC", { bg = "#002b36" })
+vim.api.nvim_set_hl(0, "Visual",   { bg = "#586e75", fg = "#002b36" })
+vim.api.nvim_set_hl(0, "VisualNOS",{ bg = "#586e75", fg = "#002b36" })
+vim.api.nvim_set_hl(0, "Cursor",   { fg = "#002b36", bg = "#93a1a1" })
+
+-- ============================================================
+-- nvim-tree toggle 
+-- ============================================================
+local function my_tree_toggle()
+  local ft = vim.bo.filetype
+  if ft == "NvimTree" then
+    vim.cmd("NvimTreeToggle")
+  else
+    vim.cmd("NvimTreeFindFile")
+  end
+end
+vim.keymap.set("n", "<C-n>", my_tree_toggle, { silent = true })
+
+-- ============================================================
+-- Comment madness deactivated 
+-- ============================================================
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.formatoptions:remove({ "r", "o" })
+  end,
+})
+
+{{- else -}}
+-- ~/.config/nvim/init.lua (fallback)
+vim.g.mapleader = " "
+vim.opt.number = true
+{{- end -}}
