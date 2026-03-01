@@ -59,7 +59,7 @@ bindsym $super+Return exec $preferredTerminalEmulator
 {{- if eq $host "styx" }}
 bindsym $super+d exec --no-startup-id $HOME/.local/bin/rofi-bg.sh
 {{- else }}
-bindsym $super+d exec --no-startup-id rofi -show run
+bindsym $super+d exec --no-startup-id rofi -show run -run-command "zsh -lc 'export PATH=\"$HOME/.local/bin:/usr/local/bin:/usr/bin:$PATH\"; exec {cmd}'"
 {{- end }}
 
 
