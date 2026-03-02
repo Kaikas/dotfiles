@@ -23,7 +23,13 @@ font-1 = "JetBrainsMono Nerd Font:style=Bold:size=10;2"
 
 modules-left   = m-i3
 modules-center = 
+{{- $host := lower .chezmoi.hostname -}}
+{{- if eq $host "nyx" }}
 modules-right  = m-focused m-media m-discordmic m-net m-cpu m-temp-cpu m-temp-gpu m-mem m-disk m-audio m-battery m-time m-tray
+{{- end }}
+{{- if eq $host "styx" }}
+modules-right  = m-focused m-media m-discordmic m-net m-cpu m-temp-cpu m-mem m-disk m-audio m-battery m-time m-tray
+{{- end }}
 
 include-file = ~/.config/polybar/colors.ini
 include-file = ~/.config/polybar/modules.ini

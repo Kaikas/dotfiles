@@ -44,7 +44,13 @@ format-foreground = ${colors.seg_a_fg}
 
 [module/m-net]
 type = internal/network
+{{- $host := lower .chezmoi.hostname -}}
+{{- if eq $host "nyx" }}
 interface = enp5s0
+{{- end }}
+{{- if eq $host "styx" }}
+interface = wlp9s0 
+{{- end }}
 interval = 1.0
 format-connected = <label-connected>
 label-connected = " 󰈁 %local_ip%   %downspeed:8%   %upspeed:8% "
