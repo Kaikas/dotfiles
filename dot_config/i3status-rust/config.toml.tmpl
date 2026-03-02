@@ -23,6 +23,8 @@ block = "temperature"
 interval = 5
 idle = 100
 
+{{- $host := lower .chezmoi.hostname -}}
+{{- if eq $host "nyx" }}
 [[block]]
 block = "temperature"
 interval = 2
@@ -32,6 +34,7 @@ idle = 100
 [block.theme_overrides]
 idle_bg = "#8fa3a6"
 idle_fg = "#000000"
+{{- end }}
 
 
 [[block]]
