@@ -74,7 +74,10 @@ require("lazy").setup({
       require("nvim-tree").setup({
         view = { width = 60 },
         filters = { dotfiles = false },
-        git = { enable = true },
+        git = { 
+          enable = true,
+          ignore = false,
+        },
         actions = { open_file = { quit_on_open = true } },
       })
     end,
