@@ -62,6 +62,7 @@ setopt complete_in_word
 unsetopt BEEP
 setopt appendhistory inc_append_history histignorealldups
 unsetopt share_history
+export LESS="-FRXQ"
 
 
 ########################################
