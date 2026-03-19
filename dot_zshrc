@@ -176,6 +176,8 @@ alias sound-apply="systemctl --user restart pipewire-pulse.socket && systemctl -
 ########################################
 # 11. SSH Aliases 
 ########################################
+eval "$(ssh-agent -s)" >/dev/null
+ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
 alias ci-flash="ssh -Y -C kaikas@ci-flash-01.eltako.de"
 alias ci-flash-2="ssh ci-flash-2@ci-flash-02.eltako.de"
 alias ci-runner="ssh kaikas@ci-runner-01.eltako.de"
@@ -188,7 +190,7 @@ alias bianca="ssh -p 4243 eltakoadmin@bianca.eltako.de"
 alias ophelia="ssh -p 4243 eltakoadmin@ophelia.eltako.de"
 alias saturn="ssh eltakoadmin@saturn.eltako.support -p 4243"
 alias namaka="ssh eltakoadmin@namaka.eltako.support -p 4243"
-alias desdemona="ssh -p 4243 kaikas@desdemona.eltako.de"
+alias desdemona="ssh -p 4243 eltakoadmin@desdemona.eltako.de"
 
 alias actions_runner="ssh -Y actions_runner@10.2.1.93"
 alias qs-prodserver="ssh eltakoadmin@192.168.115.157 -p 4243"
