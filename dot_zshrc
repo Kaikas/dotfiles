@@ -180,6 +180,7 @@ eval "$(ssh-agent -s)" >/dev/null
 ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
 alias ci-flash="ssh -Y -C kaikas@ci-flash-01.eltako.de"
 alias ci-flash-2="ssh ci-flash-2@ci-flash-02.eltako.de"
+alias ci-flash-4="ssh kaikas@ci-flash-04.eltako.de"
 alias ci-runner="ssh kaikas@ci-runner-01.eltako.de"
 alias ci-runner-2="ssh kaikas@192.168.115.236"
 alias ci-registry="ssh kaikas@ci-registry-01.eltako.de"
@@ -200,9 +201,37 @@ alias nyx="ssh 192.168.178.3"
 alias styx="ssh -X -C 192.168.178.2"
 alias button="ssh sw-gaming.org"
 
+autoload -Uz bashcompinit
+bashcompinit
 
 ########################################
-# 12. Extra
+# 12. ci-helper
+########################################
+_ci_helper_dynamic_complete() {
+  local script="${COMP_WORDS[0]}"
+  local resolved_script=""
+  local line=""
+
+  COMPREPLY=()
+
+  if [[ "$script" == */* ]]; then
+    resolved_script="$script"
+  else
+    resolved_script="$(command -v -- "$script" 2>/dev/null || true)"
+  fi
+
+  [[ -n "$resolved_script" ]] || return 0
+
+  while IFS= read -r line; do
+    COMPREPLY+=("$line")
+  done < <(bash "$resolved_script" completion --reply "$COMP_CWORD" "${COMP_WORDS[@]}")
+}
+
+complete -o default -F _ci_helper_dynamic_complete ci-helper.sh
+complete -o default -F _ci_helper_dynamic_complete ./ci-helper.sh
+
+########################################
+# 13. Extra
 ########################################
 # cava => visualize ALSA
 # act3 github actions visualizer
@@ -214,6 +243,7 @@ alias button="ssh sw-gaming.org"
 # procs
 # lazydocker
 # unp => unpack
+
 
 
 true
