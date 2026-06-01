@@ -26,8 +26,7 @@ modules-center =
 {{- $host := lower .chezmoi.hostname -}}
 {{- if eq $host "nyx" }}
 modules-right  = m-focused m-media m-discordmic m-net m-cpu m-temp-cpu m-temp-gpu m-mem m-disk m-audio m-battery m-time m-tray
-{{- end }}
-{{- if eq $host "styx" }}
+{{- else }}
 modules-right  = m-focused m-media m-discordmic m-net m-cpu m-temp-cpu m-mem m-disk m-audio m-battery m-time m-tray
 {{- end }}
 
