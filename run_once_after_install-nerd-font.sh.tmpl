@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Install JetBrainsMono Nerd Font into ~/.local/share/fonts (no root needed).
+# Polybar/i3 rely on it for the icon glyphs.
+set -euo pipefail
+
+dest="$HOME/.local/share/fonts/JetBrainsMonoNerdFont"
+marker="$dest/.installed"
+
+if [[ -f "$marker" ]]; then
+  exit 0
+fi
+
+mkdir -p "$dest"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+curl -fsSL -o "$tmp/JetBrainsMono.zip" \
+  "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+unzip -o -q "$tmp/JetBrainsMono.zip" -d "$dest"
+fc-cache -f "$HOME/.local/share/fonts"
+touch "$marker"
