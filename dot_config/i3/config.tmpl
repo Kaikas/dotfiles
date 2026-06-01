@@ -66,8 +66,8 @@ bindsym $super+d exec --no-startup-id rofi -show drun
 ########################################
 # 5. Screen lock, suspend
 ########################################
-bindsym $super+9 exec i3lock -i $lockWallpaper
-bindsym $super+l exec i3lock -i $lockWallpaper
+bindsym $super+9 exec ~/.config/i3/lock.sh
+bindsym $super+l exec ~/.config/i3/lock.sh
 bindsym XF86WakeUp exec $lockscript
 bindsym XF86Calculator exec --no-startup-id systemctl suspend
 exec --no-startup-id feh --bg-scale $wallpaper
@@ -221,9 +221,9 @@ mode "$mode_system" {
 ########################################
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nm-applet
-exec --no-startup-id xfce4-power-manager
 exec --no-startup-id blueman-applet
 exec --no-startup-id copyq
+exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.config/i3/lock.sh --nofork
 exec_always --no-startup-id xrdb -merge ~/.Xresources
 exec_always --no-startup-id ~/.config/i3/displays.sh
 bindsym $super+p exec --no-startup-id ~/.config/i3/displays.sh

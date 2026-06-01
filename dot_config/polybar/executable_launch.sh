@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Serialize concurrent invocations so killall+spawn can't race into duplicates
+# (XF86Display fires on resume in parallel with exec_always re-runs).
+exec 9>"/tmp/polybar-launch-$UID.lock"
+flock -x 9
+
 killall -q polybar || true
 while pgrep -u "$UID" -x polybar >/dev/null; do sleep 0.1; done
 
