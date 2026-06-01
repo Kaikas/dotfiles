@@ -1,7 +1,13 @@
+{{- $host := lower .chezmoi.hostname -}}
 [bar/main]
 monitor = ${env:MONITOR:}
-width = 100%
+{{- if eq $host "erebos" }}
+dpi = 192
+height = 48
+{{- else }}
 height = 24
+{{- end }}
+width = 100%
 radius = 0
 
 bottom = true
@@ -18,12 +24,16 @@ module-margin = 1
 fixed-center = true
 enable-ipc = true
 
+{{- if eq $host "erebos" }}
+font-0 = "JetBrainsMono Nerd Font:style=Medium:size=12;3"
+font-1 = "JetBrainsMono Nerd Font:style=Bold:size=12;3"
+{{- else }}
 font-0 = "JetBrainsMono Nerd Font:style=Medium:size=10;2"
 font-1 = "JetBrainsMono Nerd Font:style=Bold:size=10;2"
+{{- end }}
 
 modules-left   = m-i3
-modules-center = 
-{{- $host := lower .chezmoi.hostname -}}
+modules-center =
 {{- if eq $host "nyx" }}
 modules-right  = m-focused m-media m-discordmic m-net m-cpu m-temp-cpu m-temp-gpu m-mem m-disk m-audio m-battery m-time m-tray
 {{- else }}
@@ -36,5 +46,5 @@ include-file = ~/.config/polybar/modules.ini
 [bar/main_notray]
 inherit = bar/main
 modules-left   = m-i3
-modules-center = 
+modules-center =
 modules-right  = m-focused m-media m-discordmic m-net m-cpu m-temp-cpu m-temp-gpu m-mem m-disk m-audio m-battery m-time
