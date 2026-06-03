@@ -1,7 +1,12 @@
+{{- $host := lower .chezmoi.hostname -}}
 #!/usr/bin/env bash
 set -euo pipefail
 
+{{ if eq $host "erebos" -}}
+SRC="$HOME/Wallpaper/bird_of_prey.png"
+{{- else -}}
 SRC="$HOME/Wallpaper/lock.png"
+{{- end }}
 CACHE_DIR="$HOME/.cache/i3lock"
 mkdir -p "$CACHE_DIR"
 
