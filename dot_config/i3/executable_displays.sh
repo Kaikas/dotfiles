@@ -50,16 +50,26 @@ done
 host=$(hostname 2>/dev/null | tr '[:upper:]' '[:lower:]')
 if [[ "$host" == "erebos" ]] && (( lid_closed )) && (( ${#connected[@]} > 1 )) \
    && command -v i3-msg >/dev/null 2>&1; then
-  hdmi="HDMI-1-0"
-  usbc="DP-1-1"
-  if printf '%s\n' "${active[@]}" | grep -qx "$hdmi"; then
+  left=""
+  right=""
+  for pair in "HDMI-1-0:DP-1-1" "DP-3-1:DP-3-2"; do
+    l="${pair%:*}"
+    r="${pair#*:}"
+    if printf '%s\n' "${active[@]}" | grep -qx "$l" \
+       && printf '%s\n' "${active[@]}" | grep -qx "$r"; then
+      left="$l"
+      right="$r"
+      break
+    fi
+  done
+  if [[ -n "$left" ]]; then
     for ws in 1 2 3 4; do
-      i3-msg -q "workspace number $ws; move workspace to output $hdmi" >/dev/null 2>&1 || true
+      i3-msg -q "workspace number $ws; move workspace to output $left" >/dev/null 2>&1 || true
     done
   fi
-  if printf '%s\n' "${active[@]}" | grep -qx "$usbc"; then
+  if [[ -n "$right" ]]; then
     for ws in 5 6 7 8; do
-      i3-msg -q "workspace number $ws; move workspace to output $usbc" >/dev/null 2>&1 || true
+      i3-msg -q "workspace number $ws; move workspace to output $right" >/dev/null 2>&1 || true
     done
   fi
 fi
