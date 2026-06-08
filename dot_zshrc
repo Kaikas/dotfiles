@@ -244,6 +244,6 @@ complete -o default -F _ci_helper_dynamic_complete ./ci-helper.sh
 # lazydocker
 # unp => unpack
 
-echo 'export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock'
+export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
 
 true
