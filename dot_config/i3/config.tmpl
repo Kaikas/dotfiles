@@ -227,6 +227,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.config/i3/lock.sh --no
 exec_always --no-startup-id xrdb -merge ~/.Xresources
 exec_always --no-startup-id ~/.config/i3/displays.sh
 exec --no-startup-id ~/.config/i3/lid-monitor.sh
+exec --no-startup-id ~/.config/i3/monitor-hotplug.sh
 bindsym $super+p exec --no-startup-id ~/.config/i3/displays.sh
 bindsym XF86Display exec --no-startup-id ~/.config/i3/displays.sh
 
