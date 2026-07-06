@@ -246,4 +246,6 @@ complete -o default -F _ci_helper_dynamic_complete ./ci-helper.sh
 
 export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
 
+alias ksb='stackit ske kubeconfig create ske-bstrp --project-id 40881758-13af-449e-ac73-3e98ace1427e'
+
 true
