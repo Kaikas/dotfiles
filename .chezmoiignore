@@ -1,0 +1,2 @@
+# Machine-local secrets / host-specific overrides — never manage or commit these.
+.zshrc.local

@@ -268,4 +268,7 @@ export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
 
 alias ksb='stackit ske kubeconfig create ske-bstrp --project-id 40881758-13af-449e-ac73-3e98ace1427e'
 
+# Machine-local, untracked overrides (secrets, host-specific env). Not managed by chezmoi.
+[[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
 true
