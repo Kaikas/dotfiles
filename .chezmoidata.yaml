@@ -1,0 +1,7 @@
+# Per-machine flags. Default for every machine; override in a machine's
+# ~/.config/chezmoi/chezmoi.toml under [data] to opt in.
+#
+# workLaptop: set to true ONLY on the Ubuntu work laptop. Gates the
+# work-laptop-only desktop config in .chezmoiignore so it never applies
+# on other machines.
+workLaptop: false

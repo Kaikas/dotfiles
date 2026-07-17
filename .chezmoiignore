@@ -1,2 +1,22 @@
+# This file is interpreted as a template by chezmoi.
+
 # Machine-local secrets / host-specific overrides — never manage or commit these.
 .zshrc.local
+
+# Work-laptop-only desktop config (i3/polybar/display setup, HiDPI Chromium,
+# install scripts). Managed only where [data] workLaptop = true (set in that
+# machine's ~/.config/chezmoi/chezmoi.toml). Ignored everywhere else so these
+# never apply on this machine or other machines.
+{{ if not .workLaptop }}
+.Xresources
+.config/i3/config
+.config/i3/displays.sh
+.config/i3/lid-monitor.sh
+.config/i3/lock.sh
+.config/i3/monitor-hotplug.sh
+.config/polybar/config.ini
+.config/polybar/launch.sh
+.local/share/applications/chromium.desktop
+install-nerd-font.sh
+install-zsh
+{{ end }}
