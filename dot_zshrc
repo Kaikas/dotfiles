@@ -172,6 +172,25 @@ alias lock="i3lock"
 alias sound="vim $HOME/.config/pipewire/pipewire-pulse.conf.d/90-app-volumes.conf"
 alias sound-apply="systemctl --user restart pipewire-pulse.socket && systemctl --user restart pipewire-pulse.service"
 
+# Claude Code: zwei Konfigurationen — privat (~/.claude) und arbeit (~/.claude-arbeit)
+alias claude-privat='command claude'
+alias claude-arbeit='CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit command claude'
+
+# `claude` fragt, welche Config genutzt werden soll (verhindert Verwechslungen).
+# Direkt ohne Nachfrage: `claude-privat` bzw. `claude-arbeit`.
+claude() {
+  print -P "%F{yellow}Welches Claude soll gestartet werden?%f"
+  print "  1) privat  (~/.claude)"
+  print "  2) arbeit  (~/.claude-arbeit)"
+  local choice
+  read "choice?Auswahl [1/2]: "
+  case "$choice" in
+    1) command claude "$@" ;;
+    2) CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit command claude "$@" ;;
+    *) print "Abgebrochen."; return 1 ;;
+  esac
+}
+
 
 ########################################
 # 11. SSH Aliases 
@@ -180,7 +199,8 @@ eval "$(ssh-agent -s)" >/dev/null
 ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
 alias ci-flash="ssh -Y -C kaikas@ci-flash-01.eltako.de"
 alias ci-flash-2="ssh ci-flash-2@ci-flash-02.eltako.de"
-alias ci-flash-4="ssh kaikas@ci-flash-04.eltako.de"
+alias ci-flash-4="ssh -Y -C kaikas@ci-flash-04.eltako.de"
+alias ci-flash-3="ssh root@10.3.0.83"
 alias ci-runner="ssh kaikas@ci-runner-01.eltako.de"
 alias ci-runner-2="ssh kaikas@192.168.115.236"
 alias ci-registry="ssh kaikas@ci-registry-01.eltako.de"
