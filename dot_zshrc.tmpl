@@ -172,7 +172,9 @@ alias lock="i3lock"
 alias sound="vim $HOME/.config/pipewire/pipewire-pulse.conf.d/90-app-volumes.conf"
 alias sound-apply="systemctl --user restart pipewire-pulse.socket && systemctl --user restart pipewire-pulse.service"
 
+{{- if not .workLaptop }}
 # Claude Code: zwei Konfigurationen — privat (~/.claude) und arbeit (~/.claude-arbeit)
+# Nur auf Nicht-Work-Laptop-Maschinen (z. B. Home-Desktop); der Work-Laptop hat nur ~/.claude.
 alias claude-privat='command claude'
 alias claude-arbeit='CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit command claude'
 
@@ -190,6 +192,7 @@ claude() {
     *) print "Abgebrochen."; return 1 ;;
   esac
 }
+{{- end }}
 
 
 ########################################
