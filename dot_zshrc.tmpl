@@ -178,6 +178,7 @@ alias sound-apply="systemctl --user restart pipewire-pulse.socket && systemctl -
 # Nur auf Nicht-Work-Laptop-Maschinen (z. B. Home-Desktop); der Work-Laptop hat nur ~/.claude.
 alias claude-privat='command claude'
 alias claude-arbeit='CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit command claude'
+alias claude-arbeit2='CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit2 command claude'
 
 # `claude` fragt, welche Config genutzt werden soll (verhindert Verwechslungen).
 # Direkt ohne Nachfrage: `claude-privat` bzw. `claude-arbeit`.
@@ -185,11 +186,13 @@ claude() {
   print -P "%F{yellow}Welches Claude soll gestartet werden?%f"
   print "  1) privat  (~/.claude)"
   print "  2) arbeit  (~/.claude-arbeit)"
+  print "  3) arbeit  (~/.claude-arbeit-3)"
   local choice
   read "choice?Auswahl [1/2]: "
   case "$choice" in
     1) command claude "$@" ;;
     2) CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit command claude "$@" ;;
+    3) CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit2 command claude "$@" ;;
     *) print "Abgebrochen."; return 1 ;;
   esac
 }
@@ -271,6 +274,25 @@ complete -o default -F _ci_helper_dynamic_complete ./ci-helper.sh
 export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
 
 alias ksb='stackit ske kubeconfig create ske-bstrp --project-id 40881758-13af-449e-ac73-3e98ace1427e'
+
+########################################
+# gh: pick the right GitHub host per directory
+#
+# I am logged in to both airbus-ai.ghe.com and github.com. Commands with a repo
+# context take the host from the remote, but org-scoped ones (gh secret set
+# --org, gh api on org endpoints) have no remote to read and silently fall back
+# to the default host — github.com — where the org does not exist. `gh secret
+# set` has no --host flag, so GH_HOST is the only lever.
+# Set it only under ~/airbus so github.com work is unaffected.
+_gh_host_by_dir() {
+  case "$PWD" in
+    "$HOME"/airbus|"$HOME"/airbus/*) export GH_HOST=airbus-ai.ghe.com ;;
+    *) unset GH_HOST ;;
+  esac
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd _gh_host_by_dir
+_gh_host_by_dir
 
 # Machine-local, untracked overrides (secrets, host-specific env). Not managed by chezmoi.
 [[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
