@@ -181,12 +181,12 @@ alias claude-arbeit='CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit command claude'
 alias claude-arbeit2='CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit2 command claude'
 
 # `claude` fragt, welche Config genutzt werden soll (verhindert Verwechslungen).
-# Direkt ohne Nachfrage: `claude-privat` bzw. `claude-arbeit`.
+# Direkt ohne Nachfrage: `claude-privat`, `claude-arbeit` bzw. `claude-arbeit2`.
 claude() {
   print -P "%F{yellow}Welches Claude soll gestartet werden?%f"
   print "  1) privat  (~/.claude)"
   print "  2) arbeit  (~/.claude-arbeit)"
-  print "  3) arbeit  (~/.claude-arbeit-3)"
+  print "  3) arbeit2 (~/.claude-arbeit2)"
   local choice
   read "choice?Auswahl: "
   case "$choice" in
