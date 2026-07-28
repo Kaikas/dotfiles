@@ -188,7 +188,7 @@ claude() {
   print "  2) arbeit  (~/.claude-arbeit)"
   print "  3) arbeit  (~/.claude-arbeit-3)"
   local choice
-  read "choice?Auswahl [1/2]: "
+  read "choice?Auswahl: "
   case "$choice" in
     1) command claude "$@" ;;
     2) CLAUDE_CONFIG_DIR=$HOME/.claude-arbeit command claude "$@" ;;
