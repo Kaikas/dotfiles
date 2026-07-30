@@ -3,13 +3,16 @@
 # Machine-local secrets / host-specific overrides — never manage or commit these.
 .zshrc.local
 
-# Work-laptop-only desktop config (i3/polybar/display setup, HiDPI Chromium,
+# Work-laptop-only desktop config (display/lock helper scripts, HiDPI Chromium,
 # install scripts). Managed only where [data] workLaptop = true (set in that
 # machine's ~/.config/chezmoi/chezmoi.toml). Ignored everywhere else so these
 # never apply on this machine or other machines.
+#
+# .config/i3/config itself is NOT gated: it is one template for all hosts, with
+# the work-laptop-only parts (lock.sh, xss-lock, xrdb, displays.sh, hotplug,
+# $alt bindings) behind {{ "{{ if ne $host \"nyx\" }}" }} inside the template.
 {{ if not .workLaptop }}
 .Xresources
-.config/i3/config
 .config/i3/displays.sh
 .config/i3/lid-monitor.sh
 .config/i3/lock.sh

@@ -66,8 +66,13 @@ bindsym $super+d exec --no-startup-id rofi -show drun
 ########################################
 # 5. Screen lock, suspend
 ########################################
+{{- if eq $host "nyx" }}
+bindsym $super+9 exec i3lock -i $lockWallpaper
+bindsym $super+l exec i3lock -i $lockWallpaper
+{{- else }}
 bindsym $super+9 exec ~/.config/i3/lock.sh
 bindsym $super+l exec ~/.config/i3/lock.sh
+{{- end }}
 bindsym XF86WakeUp exec $lockscript
 exec --no-startup-id feh --bg-scale $wallpaper
 
@@ -124,10 +129,10 @@ bindsym $super+a focus parent
 
 bindsym $super+Ctrl+Right workspace next
 bindsym $super+Ctrl+Left workspace prev
-
+{{ if ne $host "nyx" }}
 bindsym $alt+Control+Right workspace next
 bindsym $alt+Control+Left workspace prev
-
+{{ end }}
 ########################################
 # 10. Workspaces 1-8
 ########################################
@@ -148,7 +153,7 @@ bindsym $super+Shift+5 move container to workspace 5
 bindsym $super+Shift+6 move container to workspace 6
 bindsym $super+Shift+7 move container to workspace 7
 bindsym $super+Shift+8 move container to workspace 8
-
+{{ if ne $host "nyx" }}
 bindsym $alt+Shift+1 move container to workspace 1; workspace 1
 bindsym $alt+Shift+2 move container to workspace 2; workspace 2
 bindsym $alt+Shift+3 move container to workspace 3; workspace 3
@@ -157,7 +162,7 @@ bindsym $alt+Shift+5 move container to workspace 5; workspace 5
 bindsym $alt+Shift+6 move container to workspace 6; workspace 6
 bindsym $alt+Shift+7 move container to workspace 7; workspace 7
 bindsym $alt+Shift+8 move container to workspace 8; workspace 8
-
+{{ end }}
 ########################################
 # 11. Move workspace between outputs
 ########################################
@@ -220,8 +225,14 @@ mode "$mode_system" {
 ########################################
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nm-applet
+{{- if eq $host "nyx" }}
+exec --no-startup-id xfce4-power-manager
+{{- end }}
 exec --no-startup-id blueman-applet
 exec --no-startup-id copyq
+{{- if eq $host "nyx" }}
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+{{- else }}
 exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.config/i3/lock.sh --nofork
 exec_always --no-startup-id xrdb -merge ~/.Xresources
 exec_always --no-startup-id ~/.config/i3/displays.sh
@@ -229,6 +240,7 @@ exec --no-startup-id ~/.config/i3/lid-monitor.sh
 exec --no-startup-id ~/.config/i3/monitor-hotplug.sh
 bindsym $super+p exec --no-startup-id ~/.config/i3/displays.sh
 bindsym XF86Display exec --no-startup-id ~/.config/i3/displays.sh
+{{- end }}
 
 
 ########################################
