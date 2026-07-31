@@ -11,8 +11,22 @@
 # .config/i3/config itself is NOT gated: it is one template for all hosts, with
 # the work-laptop-only parts (lock.sh, xss-lock, xrdb, displays.sh, hotplug,
 # $alt bindings) behind {{ "{{ if ne $host \"nyx\" }}" }} inside the template.
-{{ if not .workLaptop }}
+
+# Desktop-only static screen layout (fixed dual 3840x2160 on the dock).
+# Referenced from .config/i3/config in the nyx branch. Other hosts do their
+# display setup dynamically via .config/i3/displays.sh, so never apply it there.
+{{ if ne .chezmoi.hostname "nyx" }}
+.screenlayout/default.sh
+{{ end }}
+
+# .Xresources is NOT work-laptop-only: it carries the per-host HiDPI value, so
+# it is managed on every host that needs one — erebos (13.4" 4K) and nyx (dual
+# 31.5" 4K). Hosts with no branch in the template get an empty Xft.dpi section.
+{{ if and (not .workLaptop) (ne .chezmoi.hostname "nyx") }}
 .Xresources
+{{ end }}
+
+{{ if not .workLaptop }}
 .config/i3/displays.sh
 .config/i3/lid-monitor.sh
 .config/i3/lock.sh
