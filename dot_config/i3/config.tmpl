@@ -231,6 +231,9 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id blueman-applet
 exec --no-startup-id copyq
 {{- if eq $host "nyx" }}
+# Must run BEFORE polybar: launch.sh spawns one bar per connected output, so a
+# monitor that is still disabled at that point ends up without a bar.
+exec_always --no-startup-id ~/.screenlayout/default.sh
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 {{- else }}
 exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.config/i3/lock.sh --nofork
@@ -270,14 +273,18 @@ exec --no-startup-id pamac-tray
 # 17. Display rules
 ########################################
 {{- if eq $host "nyx" }}
-workspace 1 output DisplayPort-0
-workspace 2 output DisplayPort-0
-workspace 3 output DisplayPort-0
-workspace 4 output DisplayPort-0
-workspace 5 output DisplayPort-1
-workspace 6 output DisplayPort-1
-workspace 7 output DisplayPort-1
-workspace 8 output DisplayPort-1
+# i3 uses the first connected output of each list, so the layout survives a
+# docking station swap renaming the outputs (HDMI-A-0 -> HDMI-A-1).
+# left screen:
+workspace 1 output HDMI-A-1 HDMI-A-0 DisplayPort-0
+workspace 2 output HDMI-A-1 HDMI-A-0 DisplayPort-0
+workspace 3 output HDMI-A-1 HDMI-A-0 DisplayPort-0
+workspace 4 output HDMI-A-1 HDMI-A-0 DisplayPort-0
+# right screen:
+workspace 5 output DisplayPort-1 DisplayPort-0
+workspace 6 output DisplayPort-1 DisplayPort-0
+workspace 7 output DisplayPort-1 DisplayPort-0
+workspace 8 output DisplayPort-1 DisplayPort-0
 {{- else if eq $host "erebos" }}
 workspace 1 output DP-1.1 DP-3-1 HDMI-1-0 eDP-1-1 eDP-1
 workspace 2 output DP-1.1 DP-3-1 HDMI-1-0 eDP-1-1 eDP-1
