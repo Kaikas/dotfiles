@@ -9,7 +9,9 @@
 # Host specific commands
 {{- if eq $host "nyx" }}
 set $lockWallpaper $HOME/Wallpaper/lock.png
-set $wallpaper $HOME/Wallpaper/arch-solarized.png
+# Two 4K screens, so two images: feh assigns them to the monitors in order,
+# left (HDMI-A-1) then right (DisplayPort-1). Both are 3840x2160.
+set $wallpaper $HOME/Wallpaper/xkcd-2347-dependency.png $HOME/Wallpaper/xkcd-979-ancients.png
 {{- else if eq $host "styx" }}
 set $lockWallpaper $HOME/Wallpaper/lock.png
 set $wallpaper $HOME/Wallpaper/arch-nord-dark.png
@@ -74,7 +76,9 @@ bindsym $super+9 exec ~/.config/i3/lock.sh
 bindsym $super+l exec ~/.config/i3/lock.sh
 {{- end }}
 bindsym XF86WakeUp exec $lockscript
-exec --no-startup-id feh --bg-scale $wallpaper
+# --bg-fill, not --bg-scale: scale ignores aspect ratio and stretches the image
+# to the screen, which is what made the old wallpaper look off on 16:9 4K.
+exec --no-startup-id feh --bg-fill $wallpaper
 
 ########################################
 # 6. Media keys
