@@ -4,6 +4,13 @@ monitor = ${env:MONITOR:}
 {{- if eq $host "erebos" }}
 dpi = 192
 height = 48
+{{- else if eq $host "nyx" }}
+# Two 31.5-inch 4K panels at 1.5x. Pin the dpi rather than letting polybar
+# derive ~140 from the panel size, so the pt-based fonts below land on the same
+# 144 as ~/.Xresources. height is in pixels and does not follow Xft.dpi at all,
+# hence 24 * 1.5.
+dpi = 144
+height = 36
 {{- else }}
 height = 24
 {{- end }}

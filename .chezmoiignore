@@ -26,13 +26,16 @@
 .Xresources
 {{ end }}
 
+# polybar is managed on every host, not just the work laptop: the config is
+# worth versioning even where the bar is not what actually runs. config.ini is
+# one template with the per-host dpi/height/module differences inside, the same
+# way .config/i3/config is handled.
+
 {{ if not .workLaptop }}
 .config/i3/displays.sh
 .config/i3/lid-monitor.sh
 .config/i3/lock.sh
 .config/i3/monitor-hotplug.sh
-.config/polybar/config.ini
-.config/polybar/launch.sh
 .local/share/applications/chromium.desktop
 install-nerd-font.sh
 install-zsh
