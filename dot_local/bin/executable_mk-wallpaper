@@ -4,6 +4,9 @@
 # without this script a fresh install would have an i3 config pointing at files
 # nobody knows how to recreate.
 #
+#   mk-wallpaper logo [bg] [fg] [out]   distro logo, centred on a flat dark
+#                                       field, rendered from SVG so it is sharp
+#                                       at any resolution
 #   mk-wallpaper ai <prompt> [out.png]  generate a wallpaper via the OpenAI
 #                                       image API, then lock its base colour to
 #                                       solarized base03 so it matches the theme
@@ -92,6 +95,45 @@ cmd_xkcd() {
   magick identify -format 'wrote %f  %wx%h  mean=%[fx:mean]\n' "$out"
 }
 
+cmd_logo() {
+  local bg="${1:-#0f1216}" fg="${2:-#4b525a}" out="${3:-$WALLDIR/arch-logo-4k.png}"
+  local svg="${LOGO_SVG:-/usr/share/pixmaps/archlinux-logo.svg}"
+
+  command -v rsvg-convert >/dev/null || die "missing dependency: rsvg-convert (pkg: librsvg)"
+  [ -f "$svg" ] || die "no such svg: $svg"
+
+  local W H N; read -r W H N < <(geometry)
+  local lh="${LOGO_H:-$((H * 5 / 12))}"   # 900px on a 2160-tall screen
+  local tmp; tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' RETURN
+
+  # Take only the first path and re-emit it with our own fill. Building a fresh
+  # element drops any style="fill:url(#gradient)" on the original, which would
+  # otherwise beat a plain fill attribute and bring the brand colours back.
+  #
+  # First path is deliberate: the Arch logo's other two paths are the tiny (TM)
+  # letterforms, which land as specks on a wallpaper. The Garuda logo is a
+  # single path, so it is unaffected.
+  #
+  # The viewBox MUST come from the source -- Arch is 0 0 256 256 and Garuda is
+  # 0 0 512 512, and hardcoding one renders the other cropped to a quadrant.
+  python3 -c "
+import re, sys
+s = open(sys.argv[1]).read()
+m = re.search(r'<path[^>]*\bd=\"([^\"]+)\"', s)
+if not m: sys.exit('could not find a path in ' + sys.argv[1])
+vb = re.search(r'viewBox=\"([^\"]+)\"', s)
+if not vb: sys.exit('no viewBox in ' + sys.argv[1])
+print('<svg version=\"1.1\" viewBox=\"%s\" xmlns=\"http://www.w3.org/2000/svg\">'
+      '<path fill=\"%s\" fill-rule=\"evenodd\" d=\"%s\"/></svg>'
+      % (vb.group(1), sys.argv[2], m.group(1)))
+" "$svg" "$fg" > "$tmp/logo.svg" || die "could not rewrite svg"
+
+  rsvg-convert -h "$lh" -o "$tmp/logo.png" "$tmp/logo.svg" || die "rsvg-convert failed"
+  magick -size "${W}x${H}" xc:"$bg" "$tmp/logo.png" -gravity center -composite "$out"
+
+  magick identify -format "wrote %f  %wx%h  bg=$bg fg=$fg logo=${lh}px  mean=%[fx:mean]\n" "$out"
+}
+
 # Shift the image so its dominant colour lands exactly on $BASE (solarized
 # base03 by default). Image models get close to a requested hex but drift a few
 # values, which is visible when the wallpaper butts up against a terminal using
@@ -166,9 +208,16 @@ cmd_span() {
   local W H N; read -r W H N < <(geometry)
   local tmp; tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' RETURN
 
-  # Fill one monitor, cropping any overhang rather than distorting.
-  magick "$src" -filter Lanczos -resize "${W}x${H}^" \
-         -gravity center -extent "${W}x${H}" -unsharp 0x0.8+0.4+0.02 "$tmp/one.png"
+  # Fill one monitor, cropping any overhang rather than distorting. If the source
+  # is already exactly one monitor, copy it untouched -- rescaling and
+  # resharpening a pixel-perfect source only adds haloes around hard edges.
+  if [ "$(magick identify -format '%wx%h' "$src")" = "${W}x${H}" ]; then
+    echo "  source already ${W}x${H}, copying without rescale"
+    cp "$src" "$tmp/one.png"
+  else
+    magick "$src" -filter Lanczos -resize "${W}x${H}^" \
+           -gravity center -extent "${W}x${H}" -unsharp 0x0.8+0.4+0.02 "$tmp/one.png"
+  fi
 
   local dup=(); for ((i = 0; i < N; i++)); do dup+=("$tmp/one.png"); done
   magick "${dup[@]}" +append "$out"
@@ -177,8 +226,9 @@ cmd_span() {
 }
 
 case "${1:-}" in
+  logo) shift; cmd_logo "$@" ;;
   ai)   shift; [ $# -ge 1 ] || die "usage: mk-wallpaper ai <prompt> [out.png]"; cmd_ai "$@" ;;
   xkcd) shift; [ $# -ge 1 ] || die "usage: mk-wallpaper xkcd <num> [out.png]"; cmd_xkcd "$@" ;;
   span) shift; [ $# -ge 1 ] || die "usage: mk-wallpaper span <src> [out.png]"; cmd_span "$@" ;;
-  *)    die "usage: mk-wallpaper {ai <prompt>|xkcd <num>|span <src>} [out.png]" ;;
+  *)    die "usage: mk-wallpaper {logo [bg] [fg]|ai <prompt>|xkcd <num>|span <src>} [out.png]" ;;
 esac

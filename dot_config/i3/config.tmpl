@@ -8,11 +8,16 @@
 
 # Host specific commands
 {{- if eq $host "nyx" }}
-set $lockWallpaper $HOME/Wallpaper/lock.png
-# Native 3840x2160, one image on both screens. Its base is remapped to
-# solarized base03 #002b36, so the desktop matches the kitty/polybar theme
-# exactly. Rebuild with: mk-wallpaper ai "<prompt>"
-set $wallpaper $HOME/Wallpaper/solarized-topo-4k.png
+# Garuda logo, same grey on the same dark field as the desktop below, but
+# 7680x2160: i3lock draws its image once at (0,0) and never scales, so it has
+# to span both screens. Rebuild with:
+#   LOGO_SVG=/usr/share/pixmaps/garudalinux-logo.svg mk-wallpaper logo '' '' /tmp/g.png
+#   mk-wallpaper span /tmp/g.png ~/Wallpaper/garuda-logo-lock.png
+set $lockWallpaper $HOME/Wallpaper/garuda-logo-lock.png
+# Arch logo in grey on neutral dark, 3840x2160 on each screen. Rendered from
+# /usr/share/pixmaps/archlinux-logo.svg, so it is vector-sharp at 4K rather
+# than an upscale. Rebuild with: mk-wallpaper logo
+set $wallpaper $HOME/Wallpaper/arch-logo-4k.png
 {{- else if eq $host "styx" }}
 set $lockWallpaper $HOME/Wallpaper/lock.png
 set $wallpaper $HOME/Wallpaper/arch-nord-dark.png
