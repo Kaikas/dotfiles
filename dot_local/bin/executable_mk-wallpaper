@@ -4,6 +4,9 @@
 # without this script a fresh install would have an i3 config pointing at files
 # nobody knows how to recreate.
 #
+#   mk-wallpaper ai <prompt> [out.png]  generate a wallpaper via the OpenAI
+#                                       image API, then lock its base colour to
+#                                       solarized base03 so it matches the theme
 #   mk-wallpaper xkcd <num> [out.png]   dark 4K wallpaper from an xkcd comic
 #   mk-wallpaper span <src> [out.png]   duplicate an image across all monitors,
 #                                       for i3lock (see "why span" below)
@@ -89,6 +92,73 @@ cmd_xkcd() {
   magick identify -format 'wrote %f  %wx%h  mean=%[fx:mean]\n' "$out"
 }
 
+# Shift the image so its dominant colour lands exactly on $BASE (solarized
+# base03 by default). Image models get close to a requested hex but drift a few
+# values, which is visible when the wallpaper butts up against a terminal using
+# the real colour. Subtracting the offset keeps line contrast intact -- scaling
+# the channels instead would flatten it.
+palette_lock() {
+  local img="$1" base="${BASE:-#002b36}"
+  local dom tr tg tb dr dg db
+
+  dom=$(magick "$img" -resize 600x -colors 4 -format %c -depth 8 histogram:info:- \
+        | sort -rn | head -1 | grep -oE '\(([0-9]+,){2}[0-9]+\)' | head -1 | tr -d '()')
+  [ -n "$dom" ] || { echo "  palette-lock: could not sample, skipping"; return; }
+
+  read -r tr tg tb < <(magick xc:"$base" -format '%[fx:int(255*r)] %[fx:int(255*g)] %[fx:int(255*b)]' info:)
+  dr=$(( ${dom%%,*} - tr ))
+  db=$(( ${dom##*,} - tb ))
+  local mid="${dom#*,}"; dg=$(( ${mid%%,*} - tg ))
+
+  echo "  palette-lock: rgb($dom) -> $base  (delta $dr,$dg,$db)"
+  local args=()
+  for ch in R:$dr G:$dg B:$db; do
+    local c="${ch%%:*}" d="${ch##*:}"
+    [ "$d" -eq 0 ] && continue
+    if [ "$d" -gt 0 ]; then
+      args+=(-channel "$c" -evaluate subtract "$(( d * 10000 / 255 ))e-2%" +channel)
+    else
+      args+=(-channel "$c" -evaluate add "$(( -d * 10000 / 255 ))e-2%" +channel)
+    fi
+  done
+  [ ${#args[@]} -eq 0 ] || magick "$img" "${args[@]}" "$img"
+}
+
+cmd_ai() {
+  local prompt="$1" out="${2:-$WALLDIR/ai-wallpaper.png}"
+  [ -n "${OPENAI_API_KEY:-}" ] || die "OPENAI_API_KEY is not set (it lives in ~/.zshrc.local)"
+
+  local W H N; read -r W H N < <(geometry)
+  # gpt-image-2 caps the longest edge at 3840, which happens to be exactly one
+  # 4K screen -- so ask for the native size and never upscale.
+  [ "$W" -gt 3840 ] && W=3840
+
+  OPENAI_MODEL="${OPENAI_MODEL:-gpt-image-2}" \
+  python3 -c '
+import base64, json, os, sys, urllib.request
+prompt, out, size = sys.argv[1], sys.argv[2], sys.argv[3]
+# Steer away from the two things that make a generated image useless here.
+prompt += ". No text, no words, no letters, no numbers, no logos, no watermark."
+body = json.dumps({"model": os.environ["OPENAI_MODEL"], "prompt": prompt,
+                   "size": size, "n": 1}).encode()
+req = urllib.request.Request("https://api.openai.com/v1/images/generations",
+      data=body, headers={"Authorization": "Bearer " + os.environ["OPENAI_API_KEY"],
+                          "Content-Type": "application/json"})
+try:
+    with urllib.request.urlopen(req, timeout=300) as r:
+        item = json.load(r)["data"][0]
+except urllib.error.HTTPError as e:
+    sys.exit("  api error %d: %s" % (e.code, e.read().decode()[:300]))
+if "b64_json" in item:
+    open(out, "wb").write(base64.b64decode(item["b64_json"]))
+else:
+    urllib.request.urlretrieve(item["url"], out)
+' "$prompt" "$out" "${W}x${H}" || die "generation failed"
+
+  palette_lock "$out"
+  magick identify -format 'wrote %f  %wx%h  mean=%[fx:mean]\n' "$out"
+}
+
 cmd_span() {
   local src="$1" out="${2:-$WALLDIR/lock.png}"
   [ -f "$src" ] || die "no such file: $src"
@@ -107,7 +177,8 @@ cmd_span() {
 }
 
 case "${1:-}" in
+  ai)   shift; [ $# -ge 1 ] || die "usage: mk-wallpaper ai <prompt> [out.png]"; cmd_ai "$@" ;;
   xkcd) shift; [ $# -ge 1 ] || die "usage: mk-wallpaper xkcd <num> [out.png]"; cmd_xkcd "$@" ;;
   span) shift; [ $# -ge 1 ] || die "usage: mk-wallpaper span <src> [out.png]"; cmd_span "$@" ;;
-  *)    die "usage: mk-wallpaper {xkcd <num>|span <src>} [out.png]" ;;
+  *)    die "usage: mk-wallpaper {ai <prompt>|xkcd <num>|span <src>} [out.png]" ;;
 esac

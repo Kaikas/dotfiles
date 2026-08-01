@@ -9,9 +9,10 @@
 # Host specific commands
 {{- if eq $host "nyx" }}
 set $lockWallpaper $HOME/Wallpaper/lock.png
-# Two 4K screens, so two images: feh assigns them to the monitors in order,
-# left (HDMI-A-1) then right (DisplayPort-1). Both are 3840x2160.
-set $wallpaper $HOME/Wallpaper/xkcd-2347-dependency.png $HOME/Wallpaper/xkcd-979-ancients.png
+# Native 3840x2160, one image on both screens. Its base is remapped to
+# solarized base03 #002b36, so the desktop matches the kitty/polybar theme
+# exactly. Rebuild with: mk-wallpaper ai "<prompt>"
+set $wallpaper $HOME/Wallpaper/solarized-topo-4k.png
 {{- else if eq $host "styx" }}
 set $lockWallpaper $HOME/Wallpaper/lock.png
 set $wallpaper $HOME/Wallpaper/arch-nord-dark.png
