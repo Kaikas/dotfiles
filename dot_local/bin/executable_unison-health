@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Dead man's switch for the Unison syncs.
+#
+# OnFailure= only fires when a run actually runs and fails. It is blind to every
+# way a sync can go quiet instead of loud: a stopped or disabled timer, a masked
+# unit, a machine that was simply off. This check asks the opposite question --
+# "when did each sync last SUCCEED?" -- and complains when the answer is too
+# long ago, whatever the reason.
+#
+# Exit 0: everything current. Exit 1: at least one sync is stale.
+
+set -uo pipefail
+
+# Checked daily; the slack keeps a late run from tripping the alarm.
+max_age=${UNISON_MAX_AGE:-$((26 * 3600))}
+state=${STATE_DIRECTORY:-${XDG_STATE_HOME:-$HOME/.local/state}/unison}
+units=(unison-documents.service unison-documents-pictures.service)
+
+problems=()
+now=$(date +%s)
+
+for unit in "${units[@]}"; do
+    timer="${unit%.service}.timer"
+    if [[ $(systemctl --user is-active "$timer" 2>/dev/null) != active ]]; then
+        problems+=("$timer ist nicht aktiv")
+        continue
+    fi
+    stamp="$state/$unit.last-success"
+    if [[ ! -f $stamp ]]; then
+        problems+=("$unit: kein erfolgreicher Lauf verzeichnet")
+        continue
+    fi
+    age=$(( now - $(stat -c %Y "$stamp") ))
+    (( age > max_age )) && problems+=("$unit: letzter Erfolg vor $(( age / 3600 ))h")
+done
+
+if (( ${#problems[@]} == 0 )); then
+    echo "unison-health: alle Syncs aktuell"
+    exit 0
+fi
+
+printf 'unison-health: %s\n' "${problems[@]}" >&2
+# Guarded for the same reason as in unison-notify-failure: a missing daemon must
+# not turn this check into a hang. The journal lines above always get written.
+timeout 10 notify-send --app-name=unison --urgency=critical --icon=dialog-error \
+    "Unison-Sync veraltet" "$(printf '%s\n' "${problems[@]}")" ||
+    echo "unison-health: notify-send fehlgeschlagen, laeuft ein Notification-Daemon?" >&2
+exit 1

@@ -1,0 +1,20 @@
+[Unit]
+Description=Unison documents sync
+# Desktop notification on failure (throttled by the handler itself).
+OnFailure=unison-notify-failure@%n.service
+
+[Service]
+Type=oneshot
+# unison-sync wraps `unison desktop-server` and recovers once from a stale
+# archive lock left behind by a crashed run. See ~/.local/bin/unison-sync.
+ExecStart=%h/.local/bin/unison-sync desktop-server
+# Type=oneshot defaults to no timeout at all, so a wedged run would block the
+# timer indefinitely. Bound it well above a legitimate large transfer.
+TimeoutStartSec=30min
+
+StateDirectory=unison
+# ExecStartPost only runs when ExecStart succeeded, so this stamp is a true
+# record of the last SUCCESSFUL sync -- unison-health reads it.
+ExecStartPost=-/usr/bin/touch %S/unison/%n.last-success
+# Clear the notification throttle so a fresh breakage alerts immediately.
+ExecStartPost=-/usr/bin/rm -f %S/unison/%n.notified

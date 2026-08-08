@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# OnFailure= handler: raise a desktop notification when a sync unit fails.
+#
+# Throttled on purpose. The sync timers retry every 10 minutes, so an unattended
+# breakage would otherwise produce ~144 popups a day and train you to ignore
+# them. The first failure notifies at once; while it stays broken you get a
+# reminder at most every 6 hours. A successful run clears the stamp (see
+# ExecStartPost= in the sync units), so a fresh breakage always notifies
+# immediately rather than being swallowed by the throttle.
+
+set -uo pipefail
+
+unit=${1:?usage: unison-notify-failure <unit>}
+
+state=${STATE_DIRECTORY:-${XDG_STATE_HOME:-$HOME/.local/state}/unison}
+mkdir -p "$state" || exit 1
+stamp="$state/$unit.notified"
+throttle=$((6 * 3600))
+
+now=$(date +%s)
+if [[ -f $stamp ]]; then
+    last=$(stat -c %Y "$stamp" 2>/dev/null) || last=0
+    (( now - last < throttle )) && exit 0
+fi
+touch "$stamp"
+
+# Prefer unison's own diagnosis over a generic "unit failed".
+detail=$(journalctl --user -u "$unit" -n 40 --no-pager -o cat 2>/dev/null |
+         grep -aE '^(Error|Fatal error|unison-sync)' | tail -3)
+[[ -n $detail ]] || detail="journalctl --user -u $unit"
+
+# Guarded: with no notification daemon running, D-Bus activation can block for
+# ~25s (a KDE stub registered for this name waits forever). The journal line
+# below is the fallback that always survives.
+echo "unison-notify-failure: $unit -- $detail" >&2
+timeout 10 notify-send --app-name=unison --urgency=critical --icon=dialog-error \
+    "Sync fehlgeschlagen: $unit" "$detail" ||
+    echo "unison-notify-failure: notify-send fehlgeschlagen, laeuft ein Notification-Daemon?" >&2

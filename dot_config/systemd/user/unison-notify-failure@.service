@@ -1,0 +1,7 @@
+[Unit]
+Description=Desktop notification for failed unit %i
+
+[Service]
+Type=oneshot
+StateDirectory=unison
+ExecStart=%h/.local/bin/unison-notify-failure %i

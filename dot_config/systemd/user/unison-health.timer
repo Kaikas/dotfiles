@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily dead man's switch for the Unison syncs
+
+[Timer]
+OnCalendar=daily
+# Catch up after the machine was off, rather than skipping the check silently.
+Persistent=true
+RandomizedDelaySec=15min
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# Run a Unison profile and recover from a stale archive lock.
+#
+# Unison guards each archive with a lock file and refuses to sync while that
+# file exists. A run that dies without cleaning up -- a reboot, a dropped ssh
+# connection -- leaves the lock behind for good, and every later run fails with
+# "the archives are locked". Driven by a timer, that failure is silent: the
+# pictures sync sat dead from 2026-03-13 to 2026-08-08 this way, 186 failed
+# runs in the journal window alone.
+#
+# Recovery is deliberately narrow. We touch only the one file unison itself
+# named in its error, and only after establishing that no unison process on
+# that host is old enough to have created it. "Any unison is running" would be
+# far too coarse a test: both sync profiles fire on the same schedule, so the
+# sibling profile's server process is almost always alive at that moment.
+
+set -uo pipefail
+
+profile=${1:?usage: unison-sync <profile>}
+
+prf="$HOME/.unison/$profile.prf"
+[[ -r $prf ]] || { echo "unison-sync: no readable profile at $prf" >&2; exit 1; }
+
+# The ssh target lives in the profile; never duplicate it into the unit file.
+remote=$(sed -nE 's|^root[[:space:]]*=[[:space:]]*ssh://([^/]+)/.*|\1|p' "$prf" | head -1)
+
+out=$(mktemp) || exit 1
+trap 'rm -f "$out"' EXIT
+
+run() {
+    unison "$profile" 2>&1 | tee "$out"
+    return "${PIPESTATUS[0]}"
+}
+
+# Delete the lock at $1 unless a live unison process could still own it.
+# Exit 0: gone (deleted, or never there). Exit 2: a plausible owner is alive.
+probe='
+lock=$1
+[ -e "$lock" ] || exit 0
+lockts=$(stat -c %Y "$lock") || exit 1
+now=$(date +%s)
+for p in $(pgrep -x unison 2>/dev/null); do
+    et=$(ps -o etimes= -p "$p" 2>/dev/null | tr -d " ")
+    [ -n "$et" ] || continue
+    # A process that started before the lock appeared could be its owner.
+    # The 60s of slack covers the gap between exec and lock creation.
+    [ "$((now - et))" -le "$((lockts + 60))" ] && exit 2
+done
+rm -f -- "$lock"
+'
+
+status=0
+run || status=$?
+[[ $status -eq 0 ]] && exit 0
+
+# Only a stale lock is recoverable here; anything else is systemd's to report.
+lock=$(grep -oE '/[^[:space:]]+/\.unison/lk[0-9a-f]+' "$out" | head -1)
+[[ -n $lock ]] || exit "$status"
+host=$(sed -nE 's/.*[[:space:]]on host ([^[:space:]]+).*/\1/p' "$out" | head -1)
+
+if [[ -z $host || ${host,,} == "${HOSTNAME,,}" ]]; then
+    host=$HOSTNAME
+    via=()
+else
+    [[ -n $remote ]] || { echo "unison-sync: lock on $host, but $prf names no ssh root" >&2; exit "$status"; }
+    via=(ssh -o BatchMode=yes -o ConnectTimeout=15 "$remote")
+fi
+
+"${via[@]}" bash -s -- "$lock" <<<"$probe"
+case $? in
+    0) ;;
+    2) echo "unison-sync: unison still alive on $host, lock $lock is not stale" >&2; exit "$status" ;;
+    *) echo "unison-sync: could not clear lock $lock on $host" >&2; exit "$status" ;;
+esac
+
+echo "unison-sync: removed stale lock $lock on $host, retrying $profile"
+run

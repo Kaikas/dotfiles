@@ -1,0 +1,7 @@
+[Unit]
+Description=Check that the Unison syncs have succeeded recently
+
+[Service]
+Type=oneshot
+StateDirectory=unison
+ExecStart=%h/.local/bin/unison-health

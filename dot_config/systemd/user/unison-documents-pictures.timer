@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Unison pictures sync every 10 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+Persistent=true
+# Both sync timers used to fire in the same second, so every run opened two
+# competing ssh sessions to the same host. Stagger this one.
+RandomizedDelaySec=90
+
+[Install]
+WantedBy=timers.target
