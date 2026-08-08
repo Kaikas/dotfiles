@@ -1,0 +1,13 @@
+# Profil: desktop-server-audio
+root = /home/kaikas/Audio
+root = ssh://kaikas@sw-gaming.org//home/kaikas/Audio
+
+auto = true
+batch = true
+prefer = newer
+fastcheck = true
+# Keepalives tear a dead connection down after ~60s instead of letting the run
+# hang forever -- a hung run is what leaves a stale lock behind.
+sshargs = -C -o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=4
+log = true
+logfile = /home/kaikas/.unison/unison-audio.log
