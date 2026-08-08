@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Unison projects sync every 10 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+Persistent=true
+# Stagger against the other two sync timers so they do not all open ssh
+# sessions to the same host in the same second.
+RandomizedDelaySec=150
+
+[Install]
+WantedBy=timers.target
