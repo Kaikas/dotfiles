@@ -240,6 +240,11 @@ exec --no-startup-id xfce4-power-manager
 {{- end }}
 exec --no-startup-id blueman-applet
 exec --no-startup-id copyq
+# Notification daemon. Three packages register org.freedesktop.Notifications and
+# D-Bus activation picks the KDE stub, whose plasma_waitforname blocks forever --
+# so every notify-send died in a ~25s timeout. Starting dunst claims the name up
+# front and nothing has to be activated.
+exec --no-startup-id dunst
 {{- if eq $host "nyx" }}
 # Must run BEFORE polybar: launch.sh spawns one bar per connected output, so a
 # monitor that is still disabled at that point ends up without a bar.
