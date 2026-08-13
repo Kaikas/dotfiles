@@ -15,7 +15,7 @@ set -uo pipefail
 max_age=${UNISON_MAX_AGE:-$((26 * 3600))}
 state=${STATE_DIRECTORY:-${XDG_STATE_HOME:-$HOME/.local/state}/unison}
 units=(unison-documents.service unison-documents-pictures.service unison-projects.service
-       unison-audio.service)
+       unison-audio.service{{ if eq .chezmoi.hostname "nyx" }} unison-live.service{{ end }})
 
 problems=()
 now=$(date +%s)

@@ -1,0 +1,22 @@
+# Profil: desktop-server-live
+root = /home/kaikas/Live
+root = ssh://kaikas@sw-gaming.org//home/kaikas/Live
+
+# Both are large, host-only state (Docker volumes, self-hosted Actions runner
+# work dirs) that has no business round-tripping to the desktop.
+ignore = Path docker-data
+ignore = Path github-actions
+# Live data of running containers, owned by their internal uids -- kaikas
+# cannot even read them, so every run reported permission-denied skips here.
+ignore = Path docker-projects/solarwake/database
+ignore = Path docker-projects/trilium/trilium-data
+
+auto = true
+batch = true
+prefer = newer
+fastcheck = true
+# Keepalives tear a dead connection down after ~60s instead of letting the run
+# hang forever -- a hung run is what leaves a stale lock behind.
+sshargs = -C -o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=4
+log = true
+logfile = /home/kaikas/.unison/unison-live.log
