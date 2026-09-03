@@ -1,0 +1,14 @@
+[Unit]
+Description=Sonos HTTP API bridge (local control server for Sonos speakers)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Projects/sonos-http-api
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

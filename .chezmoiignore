@@ -24,6 +24,16 @@
 .config/systemd/user/unison-claude.timer
 {{ end }}
 
+# The Sonos speakers sit in the home network, so only nyx can reach them.
+# sonos-http-api.service is the local control server, sonos-tunnel.service the
+# reverse tunnel that lets button drive it. Both are useless anywhere else.
+# The tunnel needs the "sonos-tunnel-button" host alias from ~/.ssh/config,
+# which is deliberately not managed here -- this repo is public.
+{{ if ne .chezmoi.hostname "nyx" }}
+.config/systemd/user/sonos-http-api.service
+.config/systemd/user/sonos-tunnel.service
+{{ end }}
+
 # Desktop-only static screen layout (fixed dual 3840x2160 on the dock).
 # Referenced from .config/i3/config in the nyx branch. Other hosts do their
 # display setup dynamically via .config/i3/displays.sh, so never apply it there.

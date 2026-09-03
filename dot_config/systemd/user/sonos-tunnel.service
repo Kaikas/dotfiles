@@ -1,0 +1,13 @@
+[Unit]
+Description=Reverse SSH tunnel: Button:64470 -> localhost:5005 (sonos-http-api)
+After=network-online.target sonos-http-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:64470:127.0.0.1:5005 sonos-tunnel-button
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
