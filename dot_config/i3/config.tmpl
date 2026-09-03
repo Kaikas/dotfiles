@@ -75,10 +75,8 @@ bindsym $super+d exec --no-startup-id rofi -show drun
 # 5. Screen lock, suspend
 ########################################
 {{- if eq $host "nyx" }}
-bindsym $super+9 exec i3lock -i $lockWallpaper
 bindsym $super+l exec i3lock -i $lockWallpaper
 {{- else }}
-bindsym $super+9 exec ~/.config/i3/lock.sh
 bindsym $super+l exec ~/.config/i3/lock.sh
 {{- end }}
 bindsym XF86WakeUp exec $lockscript
@@ -144,7 +142,7 @@ bindsym $alt+Control+Right workspace next
 bindsym $alt+Control+Left workspace prev
 {{ end }}
 ########################################
-# 10. Workspaces 1-8
+# 10. Workspaces 1-9
 ########################################
 bindsym $super+1 workspace 1
 bindsym $super+2 workspace 2
@@ -154,6 +152,7 @@ bindsym $super+5 workspace 5
 bindsym $super+6 workspace 6
 bindsym $super+7 workspace 7
 bindsym $super+8 workspace 8
+bindsym $super+9 workspace 9
 
 bindsym $super+Shift+1 move container to workspace 1
 bindsym $super+Shift+2 move container to workspace 2
@@ -163,6 +162,7 @@ bindsym $super+Shift+5 move container to workspace 5
 bindsym $super+Shift+6 move container to workspace 6
 bindsym $super+Shift+7 move container to workspace 7
 bindsym $super+Shift+8 move container to workspace 8
+bindsym $super+Shift+9 move container to workspace 9
 {{ if ne $host "nyx" }}
 bindsym $alt+Shift+1 move container to workspace 1; workspace 1
 bindsym $alt+Shift+2 move container to workspace 2; workspace 2
@@ -172,6 +172,7 @@ bindsym $alt+Shift+5 move container to workspace 5; workspace 5
 bindsym $alt+Shift+6 move container to workspace 6; workspace 6
 bindsym $alt+Shift+7 move container to workspace 7; workspace 7
 bindsym $alt+Shift+8 move container to workspace 8; workspace 8
+bindsym $alt+Shift+9 move container to workspace 9; workspace 9
 {{ end }}
 ########################################
 # 11. Move workspace between outputs
@@ -250,6 +251,13 @@ exec --no-startup-id dunst
 # monitor that is still disabled at that point ends up without a bar.
 exec_always --no-startup-id ~/.screenlayout/default.sh
 exec_always --no-startup-id ~/.config/polybar/launch.sh
+
+# Placeholders so the apps below swallow into their fixed spot regardless of
+# launch order. Must run before those execs so the placeholders exist first.
+# Workspace 7 is the messenger row (WhatsApp/Signal/Telegram), workspace 9 holds
+# Joplin and Todoist.
+exec --no-startup-id i3-msg 'workspace 7; append_layout ~/.config/i3/layouts/workspace7.json'
+exec --no-startup-id i3-msg 'workspace 9; append_layout ~/.config/i3/layouts/workspace9.json'
 {{- else }}
 exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.config/i3/lock.sh --nofork
 exec_always --no-startup-id xrdb -merge ~/.Xresources
@@ -269,9 +277,14 @@ exec --no-startup-id firefox
 exec --no-startup-id discord
 exec --no-startup-id spotify
 exec --no-startup-id signal-desktop
-#exec --no-startup-id Telegram
+exec --no-startup-id Telegram
 exec --no-startup-id zapzap
+exec --no-startup-id joplin-desktop
+# Dedicated profile so cookies/session stay separate from the main browsing
+# profile, same idea as zapzap/signal-desktop being their own app.
+exec --no-startup-id chromium --user-data-dir=$HOME/.config/chromium-todoist --app=https://app.todoist.com
 exec --no-startup-id pasystray
+exec --no-startup-id $HOME/Projects/voice-assistant/desktop-ui/.venv/bin/python $HOME/Projects/voice-assistant/desktop-ui/main.py
 exec_always --no-startup-id $HOME/.local/bin/wacom-cintiq-map.sh
 exec_always --no-startup-id setcursor
 {{- end }}
@@ -295,11 +308,12 @@ workspace 1 output HDMI-A-1 HDMI-A-0 DisplayPort-0
 workspace 2 output HDMI-A-1 HDMI-A-0 DisplayPort-0
 workspace 3 output HDMI-A-1 HDMI-A-0 DisplayPort-0
 workspace 4 output HDMI-A-1 HDMI-A-0 DisplayPort-0
+workspace 5 output HDMI-A-1 HDMI-A-0 DisplayPort-0
 # right screen:
-workspace 5 output DisplayPort-1 DisplayPort-0
 workspace 6 output DisplayPort-1 DisplayPort-0
 workspace 7 output DisplayPort-1 DisplayPort-0
 workspace 8 output DisplayPort-1 DisplayPort-0
+workspace 9 output DisplayPort-1 DisplayPort-0
 {{- else if eq $host "erebos" }}
 workspace 1 output DP-1.1 DP-3-1 HDMI-1-0 eDP-1-1 eDP-1
 workspace 2 output DP-1.1 DP-3-1 HDMI-1-0 eDP-1-1 eDP-1
@@ -339,8 +353,11 @@ assign [class="teams-for-linux"] workspace number 7
 assign [class="discord"] workspace number 8
 
 assign [class="(?i)signal"] workspace number 7
-assign [class="Telegram"] workspace number 5
+assign [class="TelegramDesktop"] workspace number 7
 assign [class="ZapZap"] workspace number 7
+assign [class="Joplin"] workspace number 9
+assign [class="Chromium" instance="app.todoist.com"] workspace number 9
+assign [title="Jarvis"] workspace number 5
 
 ########################################
 # 20. Bars 

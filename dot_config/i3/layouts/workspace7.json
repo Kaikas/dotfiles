@@ -1,0 +1,25 @@
+// vim:ts=4:sw=4:et
+// Workspace 7 messenger row: WhatsApp (ZapZap), Signal, Telegram side by side.
+// Joplin and Todoist moved to workspace 9 on 2026-09-03, see workspace9.json.
+// Hand-written to match the live tree (i3-save-tree needs AnyEvent::I3, which
+// isn't installed).
+[
+    {
+        "type": "con",
+        "swallows": [
+            { "class": "^ZapZap$", "instance": "^zapzap$" }
+        ]
+    },
+    {
+        "type": "con",
+        "swallows": [
+            { "class": "(?i)^signal$" }
+        ]
+    },
+    {
+        "type": "con",
+        "swallows": [
+            { "class": "^TelegramDesktop$" }
+        ]
+    }
+]

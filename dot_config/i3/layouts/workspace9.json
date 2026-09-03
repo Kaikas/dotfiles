@@ -1,0 +1,17 @@
+// vim:ts=4:sw=4:et
+// Workspace 9: Joplin left, Todoist right. Both came from the old workspace-7
+// grid and moved here on 2026-09-03.
+[
+    {
+        "type": "con",
+        "swallows": [
+            { "class": "^Joplin$", "instance": "^joplin$" }
+        ]
+    },
+    {
+        "type": "con",
+        "swallows": [
+            { "class": "^Chromium$", "instance": "^app\\.todoist\\.com$" }
+        ]
+    }
+]
