@@ -271,7 +271,17 @@ complete -o default -F _ci_helper_dynamic_complete ./ci-helper.sh
 # lazydocker
 # unp => unpack
 
+{{- if eq (lower .chezmoi.hostname) "nyx" }}
+
+# Podman is not installed on this machine; the socket below never exists, and
+# setting DOCKER_HOST makes every `docker` command fail against the running
+# system Docker daemon. Re-enable only together with an actual podman install
+# (`systemctl --user enable --now podman.socket`).
+# export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
+{{- else }}
+
 export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
+{{- end }}
 
 alias ksb='stackit ske kubeconfig create ske-bstrp --project-id 40881758-13af-449e-ac73-3e98ace1427e'
 

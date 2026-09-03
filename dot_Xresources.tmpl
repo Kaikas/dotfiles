@@ -3,12 +3,14 @@
 ! HiDPI scaling (erebos: 13.4-inch 4K panel ~338 physical DPI)
 Xft.dpi: 192
 {{- else if eq $host "nyx" }}
-! HiDPI scaling (nyx: two 31.5-inch 4K panels, ~140 physical DPI -> 1.5x).
-! Keeps everything the same physical size as the old 2560x1440 screens, just
-! sharper: 3840x2160 at 1.5x is an effective 2560x1440 per screen.
+! No scaling (nyx: two 31.5-inch 4K panels, ~140 physical DPI). 96 dpi = 1x, so
+! the full 3840x2160 per screen is usable instead of an effective 2560x1440.
+! Was 144 (1.5x) to match the old 2560x1440 screens -- deliberately dropped:
+! everything looked zoomed in, most visibly in the DPI-aware apps (Firefox,
+! Spotify), while i3 and the terminals ignored it anyway.
 ! Read at login by /etc/lightdm/Xsession, which merges ~/.Xresources -- i3 does
 ! not run xrdb on this host.
-Xft.dpi: 144
+Xft.dpi: 96
 {{- end }}
 
 Xft.antialias: true

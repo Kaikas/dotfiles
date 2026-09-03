@@ -12,13 +12,16 @@
 # the work-laptop-only parts (lock.sh, xss-lock, xrdb, displays.sh, hotplug,
 # $alt bindings) behind {{ "{{ if ne $host \"nyx\" }}" }} inside the template.
 
-# The Live sync (button's ~/Live, mostly running-container state) is only
-# meaningful on nyx -- the other three syncs are nyx-specific too but predate
-# this gating; this one is deliberately scoped from the start.
+# The Live sync (button's ~/Live, mostly running-container state) and the Claude
+# sync (button's ~/Claude, the agent entry point) are only meaningful on nyx --
+# the other syncs are nyx-specific too but predate this gating.
 {{ if ne .chezmoi.hostname "nyx" }}
 .unison/desktop-server-live.prf
 .config/systemd/user/unison-live.service
 .config/systemd/user/unison-live.timer
+.unison/desktop-server-claude.prf
+.config/systemd/user/unison-claude.service
+.config/systemd/user/unison-claude.timer
 {{ end }}
 
 # Desktop-only static screen layout (fixed dual 3840x2160 on the dock).

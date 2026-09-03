@@ -10,6 +10,10 @@ ignore = Path github-actions
 # cannot even read them, so every run reported permission-denied skips here.
 ignore = Path docker-projects/solarwake/database
 ignore = Path docker-projects/trilium/trilium-data
+# Joplin server's live sqlite db -- written to by the running container
+# mid-sync, so the transfer keeps aborting with "modified during
+# synchronization".
+ignore = Path docker-projects/joplin-server/data
 
 auto = true
 batch = true

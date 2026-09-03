@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Unison claude sync every 10 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+Persistent=true
+# Stagger against the other sync timers so they do not all open ssh
+# sessions to the same host in the same second.
+RandomizedDelaySec=330
+
+[Install]
+WantedBy=timers.target

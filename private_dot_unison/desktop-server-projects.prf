@@ -11,3 +11,10 @@ fastcheck = true
 sshargs = -C -o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=4
 log = true
 logfile = /home/kaikas/.unison/unison-projects.log
+
+# Wear-OS-App (voice-assistant/wear): Android-Buildartefakte sind riesig und
+# aendern sich staendig, lokal signierte Debug-Builds gehoeren nicht in den Sync.
+ignore = Name build
+ignore = Name .gradle
+# lokales Server-Token, s. voice-assistant-worktrees/wear/wear/local.properties
+ignore = Path voice-assistant-worktrees/wear/wear/local.properties
